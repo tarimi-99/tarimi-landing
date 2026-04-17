@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תזונה מרימה | TARIMI by Maayan Sultan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Heebo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --nude:#C9A48A;--nude-light:#DEC0AA;--nude-dark:#A8856E;
+  --copper:#C47A55;--copper-dark:#9E6040;
+  --cream:#FAF7F4;--cream-2:#F3EDE8;
+  --dark:#2C2420;--mid:#7A6A62;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--dark);direction:rtl;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ── EDITOR PANEL ── */
+#editor-toggle{
+  position:fixed;bottom:24px;left:24px;z-index:9999;
+  background:var(--copper);color:white;
+  border:none;border-radius:50px;
+  padding:12px 20px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'Heebo',sans-serif;
+  box-shadow:0 4px 20px rgba(196,122,85,0.4);
+  display:flex;align-items:center;gap:8px;
+  transition:all 0.2s;
+}
+#editor-toggle:hover{background:var(--copper-dark);transform:translateY(-2px)}
+#editor-toggle .toggle-icon{font-size:16px}
+
+#editor-panel{
+  position:fixed;left:0;top:0;bottom:0;
+  width:320px;z-index:9998;
+  background:#1C1917;
+  color:#F5F0EC;
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);
+  transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:4px 0 24px rgba(0,0,0,0.4);
+  font-family:'Heebo',sans-serif;
+}
+#editor-panel.open{transform:translateX(0)}
+
+.panel-header{
+  padding:1.2rem 1.4rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.panel-title{font-size:15px;font-weight:600;letter-spacing:0.05em}
+.panel-subtitle{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px}
+#panel-close{
+  background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.6);
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+}
+#panel-close:hover{background:rgba(255,255,255,0.15);color:white}
+
+.panel-tabs{
+  display:flex;border-bottom:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+.panel-tab{
+  flex:1;padding:10px 8px;border:none;background:transparent;
+  color:rgba(255,255,255,0.45);font-family:'Heebo',sans-serif;
+  font-size:12px;cursor:pointer;transition:all 0.2s;
+  border-bottom:2px solid transparent;
+}
+.panel-tab.active{color:var(--nude);border-bottom-color:var(--nude)}
+.panel-tab:hover{color:rgba(255,255,255,0.8)}
+
+.panel-body{
+  flex:1;overflow-y:auto;padding:1rem 1.2rem;
+  display:flex;flex-direction:column;gap:1.2rem;
+}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-track{background:transparent}
+.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
+
+.tab-content{display:none}
+.tab-content.active{display:flex;flex-direction:column;gap:1.2rem}
+
+.field-group{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px;padding:1rem;
+}
+.field-group-title{
+  font-size:11px;font-weight:600;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--nude);
+  margin-bottom:0.8rem;
+}
+.field{margin-bottom:0.7rem}
+.field:last-child{margin-bottom:0}
+.field label{
+  display:block;font-size:11px;color:rgba(255,255,255,0.5);
+  margin-bottom:4px;letter-spacing:0.04em;
+}
+.field input[type="text"],
+.field input[type="number"],
+.field textarea{
+  width:100%;background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:6px;padding:7px 10px;
+  color:#F5F0EC;font-family:'Heebo',sans-serif;font-size:13px;
+  transition:border-color 0.2s;resize:vertical;
+}
+.field input:focus,.field textarea:focus{
+  outline:none;border-color:rgba(201,164,138,0.5);
+  background:rgba(255,255,255,0.1);
+}
+.field textarea{min-height:60px}
+
+/* Image upload field */
+.img-upload-area{
+  border:1.5px dashed rgba(201,164,138,0.3);
+  border-radius:8px;padding:1rem;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s;position:relative;
+  overflow:hidden;
+}
+.img-upload-area:hover{border-color:rgba(201,164,138,0.6);background:rgba(201,164,138,0.05)}
+.img-upload-area input[type="file"]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.img-upload-preview{
+  width:100%;height:120px;object-fit:cover;
+  border-radius:6px;display:none;margin-bottom:8px;
+}
+.img-upload-preview.visible{display:block}
+.img-upload-icon{font-size:1.8rem;margin-bottom:6px;display:block}
+.img-upload-text{font-size:12px;color:rgba(255,255,255,0.45)}
+.img-upload-hint{font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px}
+.img-clear-btn{
+  display:none;margin-top:6px;
+  background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.2);
+  color:rgba(255,120,120,0.8);border-radius:4px;padding:4px 10px;
+  font-size:11px;cursor:pointer;font-family:'Heebo',sans-serif;
+  transition:all 0.2s;
+}
+.img-clear-btn.visible{display:inline-block}
+.img-clear-btn:hover{background:rgba(255,80,80,0.25)}
+
+/* Emoji picker */
+.emoji-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.emoji-btn{
+  width:34px;height:34px;border-radius:6px;
+  border:1.5px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.emoji-btn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.25);transform:scale(1.1)}
+.emoji-btn.selected{border-color:var(--nude);background:rgba(201,164,138,0.15)}
+.emoji-custom-input{
+  width:100%;margin-top:6px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:6px;padding:6px 10px;
+  color:#F5F0EC;font-size:14px;font-family:'Heebo',sans-serif;
+}
+.emoji-custom-input:focus{outline:none;border-color:rgba(201,164,138,0.5)}
+
+/* Recipe card editor */
+.recipe-item{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:8px;padding:0.8rem;
+  margin-bottom:0.6rem;
+}
+.recipe-item-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:0.6rem;cursor:pointer;
+}
+.recipe-item-emoji{font-size:1.3rem}
+.recipe-item-name{font-size:13px;font-weight:500;color:rgba(255,255,255,0.8)}
+.recipe-item-toggle{margin-right:auto;font-size:11px;color:rgba(255,255,255,0.3)}
+.recipe-item-fields{display:none}
+.recipe-item-fields.open{display:flex;flex-direction:column;gap:6px}
+
+/* Panel footer */
+.panel-footer{
+  padding:1rem 1.2rem;
+  border-top:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+.save-btn{
+  width:100%;background:var(--copper);color:white;
+  border:none;border-radius:8px;padding:12px;
+  font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.save-btn:hover{background:var(--copper-dark)}
+.save-btn.saved{background:#2E7D52}
+.save-note{font-size:10px;color:rgba(255,255,255,0.25);text-align:center;margin-top:6px}
+
+/* ── PAGE STYLES ── */
+nav{
+  position:fixed;top:0;right:0;left:0;z-index:200;
+  padding:1rem 5vw;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(250,247,244,0.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(201,164,138,0.18);
+}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;letter-spacing:0.14em;color:var(--dark);text-decoration:none;}
+.nav-logo span{font-weight:300;color:var(--nude);font-size:0.6em;display:block;letter-spacing:0.22em;margin-top:-3px;}
+.nav-cta{background:var(--copper);color:white;border:none;padding:10px 24px;border-radius:6px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block;}
+.nav-cta:hover{background:var(--copper-dark);transform:translateY(-1px)}
+
+.hero{min-height:100vh;background:var(--dark);display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 5vw 5rem;position:relative;overflow:hidden;gap:4rem;}
+.hero::before{content:'';position:absolute;top:-300px;left:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(201,164,138,0.12) 0%,transparent 65%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-200px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(196,122,85,0.1) 0%,transparent 65%);pointer-events:none;}
+.hero-text{position:relative;z-index:2;animation:fadeUp 0.9s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,164,138,0.12);border:1px solid rgba(201,164,138,0.25);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--nude-light);letter-spacing:0.1em;margin-bottom:1.8rem;font-weight:400;}
+.tag-dot{width:5px;height:5px;background:var(--nude);border-radius:50%;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,6vw,6.5rem);font-weight:700;line-height:1.0;color:var(--cream);margin-bottom:0.4rem;}
+.hero-title .line2{color:var(--nude);font-weight:300;font-style:italic;font-size:0.75em;display:block;margin-top:0.1em;}
+.hero-title .line3{color:rgba(250,247,244,0.3);font-weight:300;font-size:0.35em;display:block;margin-top:0.6em;letter-spacing:0.2em;text-transform:uppercase;font-family:'Heebo',sans-serif;font-style:normal;}
+.hero-desc{font-size:1.05rem;color:rgba(250,247,244,0.6);line-height:1.8;margin:2rem 0 2.5rem;max-width:420px;font-weight:300;}
+.hero-desc strong{color:rgba(250,247,244,0.9);font-weight:500}
+.hero-buttons{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:var(--copper);color:white;border:none;padding:16px 38px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;}
+.btn-primary:hover{background:var(--copper-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,122,85,0.3)}
+.btn-secondary{color:rgba(250,247,244,0.6);background:transparent;border:1px solid rgba(250,247,244,0.15);padding:15px 26px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:15px;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;}
+.btn-secondary:hover{border-color:rgba(250,247,244,0.4);color:var(--cream)}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(250,247,244,0.07);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--nude);display:block;line-height:1;}
+.stat-label{font-size:11px;color:rgba(250,247,244,0.4);margin-top:4px;letter-spacing:0.06em}
+.hero-visual{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;animation:fadeUp 0.9s 0.2s ease both;}
+.book-wrap{position:relative;width:280px;height:420px}
+.book{width:240px;height:360px;background:linear-gradient(150deg,var(--nude-dark) 0%,var(--nude) 40%,var(--nude-light) 100%);border-radius:4px 14px 14px 4px;box-shadow:-8px 14px 48px rgba(0,0,0,0.45),-2px 4px 10px rgba(0,0,0,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.book::before{content:'';position:absolute;right:0;top:0;width:18px;height:100%;background:rgba(0,0,0,0.22);border-radius:0 14px 14px 0;}
+.book::after{content:'';position:absolute;right:18px;top:0;width:1.5px;height:100%;background:rgba(0,0,0,0.12);}
+.book-content{text-align:center;padding:2.5rem;position:relative;z-index:1}
+.book-icon{font-size:2.5rem;display:block;margin-bottom:1.2rem}
+.book-name{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:white;line-height:1.1;}
+.book-line{width:36px;height:1.5px;background:rgba(255,255,255,0.5);margin:1rem auto}
+.book-sub{font-size:11px;color:rgba(255,255,255,0.75);letter-spacing:0.14em;text-transform:uppercase;font-weight:300;}
+.chip{position:absolute;background:white;border-radius:12px;padding:10px 15px;box-shadow:0 6px 24px rgba(44,36,32,0.18);}
+.chip.a{bottom:40px;left:-40px;animation:chipFloat 4s ease-in-out infinite}
+.chip.b{top:50px;left:-30px;animation:chipFloat 4s ease-in-out infinite;animation-delay:-2s}
+@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.chip-n{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--copper);line-height:1}
+.chip-t{font-size:11px;color:var(--mid);margin-top:2px}
+
+/* Profile image */
+.maayan-photo{width:100%;height:100%;object-fit:cover;border-radius:20px;display:none;}
+.maayan-photo.visible{display:block}
+
+.pain{background:#1E1A18;padding:6rem 5vw}
+.sec-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--nude);font-weight:500;margin-bottom:0.8rem;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:600;color:var(--cream);line-height:1.15;margin-bottom:0.5rem;}
+.sec-title em{color:var(--nude);font-style:italic;font-weight:300}
+.sec-sub{font-size:1rem;color:rgba(250,247,244,0.5);margin-bottom:3rem;font-weight:300;line-height:1.7;max-width:480px}
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.8rem;margin-top:3rem;}
+.pain-card{background:rgba(250,247,244,0.04);border:1px solid rgba(250,247,244,0.07);border-radius:10px;padding:1.4rem 1.6rem;transition:all 0.25s;position:relative;overflow:hidden;}
+.pain-card::before{content:'';position:absolute;right:0;top:0;width:3px;height:0;background:var(--copper);border-radius:0 10px 10px 0;transition:height 0.3s;}
+.pain-card:hover{background:rgba(201,164,138,0.07);border-color:rgba(201,164,138,0.15);transform:translateY(-2px)}
+.pain-card:hover::before{height:100%}
+.pain-text{font-size:14px;color:rgba(250,247,244,0.7);line-height:1.65;font-style:italic}
+.pain-text::before{content:'"';color:var(--copper);font-family:'Cormorant Garamond',serif;font-size:1.8em;line-height:0;vertical-align:-0.3em;margin-left:4px}
+.pain-text::after{content:'"';color:var(--copper);font-family:'Cormorant Garamond',serif;font-size:1.8em;line-height:0;vertical-align:-0.3em;margin-right:4px}
+
+.solution{background:var(--cream);padding:6rem 5vw}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.food-is-joy{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--copper);font-weight:500;margin-bottom:0.6rem;}
+.solution-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:700;color:var(--dark);line-height:1.15;margin-bottom:1.2rem;}
+.solution-title em{color:var(--copper);font-style:italic}
+.solution-body{font-size:1rem;color:var(--mid);line-height:1.85;font-weight:300;margin-bottom:2rem}
+.solution-body strong{color:var(--dark);font-weight:500}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:0.8rem}
+.check-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--mid);line-height:1.5}
+.check-list li::before{content:'✓';color:var(--copper);font-weight:600;font-size:14px;flex-shrink:0;margin-top:1px}
+.solution-image-box{background:var(--cream-2);border-radius:20px;overflow:hidden;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:stretch;}
+.solution-top-img-wrap{flex:1;position:relative;overflow:hidden;min-height:0;}
+.solution-top-img{width:100%;height:100%;object-fit:cover;display:none;}
+.solution-top-img.visible{display:block}
+.solution-top-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;color:var(--light-text);
+  background:var(--cream-2);
+}
+.solution-top-placeholder span{font-size:2.5rem;opacity:0.4}
+.solution-top-placeholder p{font-size:12px;color:var(--light-text);text-align:center;line-height:1.5;opacity:0.6}
+.solution-img{width:100%;height:100%;object-fit:cover;display:none;}
+.solution-img.visible{display:block}
+.recipe-preview{padding:2rem;flex-shrink:0;}
+.recipe-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--dark);margin-bottom:0.3rem;}
+.recipe-sub{font-size:12px;color:var(--nude-dark);letter-spacing:0.08em;margin-bottom:1.5rem}
+.recipe-divider{height:1px;background:rgba(201,164,138,0.3);margin-bottom:1.5rem}
+.recipe-ingredients{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+.recipe-ingredients li{font-size:13px;color:var(--mid);display:flex;align-items:center;gap:8px}
+.recipe-ingredients li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--nude);flex-shrink:0}
+.recipe-tip{margin-top:1.5rem;background:rgba(201,164,138,0.12);border-radius:8px;padding:1rem 1.2rem}
+.recipe-tip-label{font-size:11px;font-weight:600;color:var(--copper);letter-spacing:0.08em;margin-bottom:0.3rem}
+.recipe-tip-text{font-size:12px;color:var(--mid);line-height:1.6}
+
+.recipes{background:#1E1A18;padding:6rem 5vw}
+.recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;margin-top:3rem;}
+.recipe-card{background:rgba(250,247,244,0.04);border:1px solid rgba(250,247,244,0.07);border-radius:12px;padding:1.5rem 1.7rem;transition:all 0.25s;}
+.recipe-card:hover{background:rgba(201,164,138,0.08);border-color:rgba(201,164,138,0.18);transform:translateY(-3px)}
+.recipe-card-icon{font-size:1.8rem;margin-bottom:0.8rem;display:block}
+.recipe-card-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--cream);margin-bottom:0.3rem;}
+.recipe-card-desc{font-size:12px;color:rgba(250,247,244,0.45);line-height:1.5;font-weight:300}
+.recipe-card-tag{display:inline-block;margin-top:1rem;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);font-weight:500;}
+
+.maayan{background:var(--cream);padding:6rem 5vw}
+.maayan-split{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:center}
+.maayan-image-box{background:linear-gradient(150deg,var(--nude-dark),var(--nude),var(--nude-light));border-radius:20px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.maayan-image-box::after{content:attr(data-name);position:absolute;bottom:1.5rem;right:1.5rem;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:0.06em;}
+.photo-icon{font-size:5rem;opacity:0.4}
+.maayan-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--copper);font-weight:500;margin-bottom:0.7rem}
+.maayan-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,3.5vw,3rem);font-weight:700;color:var(--dark);line-height:1.1;margin-bottom:1.5rem;}
+.maayan-bio{font-size:1rem;color:var(--mid);line-height:1.9;font-weight:300;margin-bottom:2rem}
+.maayan-bio strong{color:var(--dark);font-weight:500}
+.quote-block{background:var(--cream-2);border-right:3px solid var(--copper);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-top:1.5rem;}
+.quote-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--dark);line-height:1.6;}
+
+.tip-band{background:var(--nude);padding:3rem 5vw;text-align:center}
+.tip-band-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.5rem;font-weight:400}
+.tip-band-text{font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,2.5vw,2rem);font-style:italic;color:white;line-height:1.6;}
+
+.cta{background:var(--dark);padding:7rem 5vw;text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,164,138,0.1) 0%,transparent 65%);pointer-events:none;}
+.cta-tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--nude);font-weight:400;margin-bottom:1rem}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,5rem);font-weight:700;color:var(--cream);line-height:1.05;margin-bottom:0.5rem;}
+.cta-title em{color:var(--nude);font-style:italic;font-weight:300}
+.cta-sub{font-size:1rem;color:rgba(250,247,244,0.5);margin-bottom:3rem;font-weight:300;line-height:1.7}
+.price-box{display:inline-flex;align-items:baseline;gap:6px;margin-bottom:0.6rem}
+.price-currency{font-size:1.5rem;color:var(--nude-light);font-weight:300}
+.price-amount{font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:700;color:var(--cream);line-height:1;}
+.price-note{font-size:13px;color:rgba(250,247,244,0.4);margin-bottom:2.5rem}
+.cta-btn{background:var(--copper);color:white;border:none;padding:18px 56px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:17px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;box-shadow:0 4px 20px rgba(196,122,85,0.3);}
+.cta-btn:hover{background:var(--copper-dark);transform:translateY(-3px);box-shadow:0 8px 32px rgba(196,122,85,0.4)}
+.cta-guarantee{font-size:12px;color:rgba(250,247,244,0.3);margin-top:1.2rem}
+
+footer{background:#141210;padding:2rem 5vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;letter-spacing:0.12em;color:rgba(250,247,244,0.4);}
+.footer-copy{font-size:12px;color:rgba(250,247,244,0.2)}
+
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;padding:6rem 6vw 4rem;gap:3rem}
+  .hero-visual{order:-1}
+  .split{grid-template-columns:1fr}
+  .maayan-split{grid-template-columns:1fr}
+  .maayan-image-box{aspect-ratio:1/1}
+  .hero-stats{gap:1.5rem}
+  .pain-grid{grid-template-columns:1fr}
+  .recipes-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  footer{flex-direction:column;text-align:center}
+  #editor-panel{width:290px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ EDITOR PANEL ══ -->
+<div id="editor-panel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title">✏️ עורך הדף</div>
+      <div class="panel-subtitle">שנאי תמונות, אייקונים וטקסטים</div>
+    </div>
+    <button id="panel-close">✕</button>
+  </div>
+
+  <div class="panel-tabs">
+    <button class="panel-tab active" data-tab="images">🖼 תמונות</button>
+    <button class="panel-tab" data-tab="icons">😊 אייקונים</button>
+    <button class="panel-tab" data-tab="texts">✍️ טקסטים</button>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- IMAGES TAB -->
+    <div class="tab-content active" id="tab-images">
+
+      <div class="field-group">
+        <div class="field-group-title">📸 תמונת מעיין (סקשן "על המחברת")</div>
+        <div class="img-upload-area" id="maayan-upload-area">
+          <input type="file" accept="image/*" id="maayan-img-input">
+          <img class="img-upload-preview" id="maayan-preview" src="" alt="">
+          <span class="img-upload-icon">👩‍🍳</span>
+          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-hint">JPG, PNG, WEBP · מקס 5MB</div>
+        </div>
+        <button class="img-clear-btn" id="maayan-clear">✕ הסרת תמונה</button>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🖼 תמונה עליונה (מעל המתכון)</div>
+        <div class="img-upload-area" id="sol-top-upload-area">
+          <input type="file" accept="image/*" id="sol-top-img-input">
+          <img class="img-upload-preview" id="sol-top-preview" src="" alt="">
+          <span class="img-upload-icon">📷</span>
+          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-hint">תמונת אוכל / מתכון / ספר</div>
+        </div>
+        <button class="img-clear-btn" id="sol-top-clear">✕ הסרת תמונה</button>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🔄 החלפה מלאה של הקופסה</div>
+        <div class="img-upload-area" id="solution-upload-area">
+          <input type="file" accept="image/*" id="solution-img-input">
+          <img class="img-upload-preview" id="solution-preview" src="" alt="">
+          <span class="img-upload-icon">🥗</span>
+          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-hint">מחליפה את כל הקופסה בתמונה</div>
+        </div>
+        <button class="img-clear-btn" id="solution-clear">✕ הסרת תמונה</button>
+      </div>
+
+    </div>
+
+    <!-- ICONS TAB -->
+    <div class="tab-content" id="tab-icons">
+
+      <div class="field-group">
+        <div class="field-group-title">📚 אייקון הספר (Hero)</div>
+        <div class="emoji-row" id="book-emoji-row">
+          <button class="emoji-btn selected" data-emoji="🥗">🥗</button>
+          <button class="emoji-btn" data-emoji="🍽️">🍽️</button>
+          <button class="emoji-btn" data-emoji="🥘">🥘</button>
+          <button class="emoji-btn" data-emoji="🍳">🍳</button>
+          <button class="emoji-btn" data-emoji="🥑">🥑</button>
+          <button class="emoji-btn" data-emoji="🌿">🌿</button>
+          <button class="emoji-btn" data-emoji="💪">💪</button>
+          <button class="emoji-btn" data-emoji="✨">✨</button>
+        </div>
+        <input class="emoji-custom-input" id="book-emoji-custom" placeholder="או הקלידי אייקון משלך..." maxlength="4">
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🍽️ אייקוני כרטיסי מתכונים</div>
+        <div id="recipe-icons-list">
+          <!-- generated by JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TEXTS TAB -->
+    <div class="tab-content" id="tab-texts">
+
+      <div class="field-group">
+        <div class="field-group-title">🏠 ניווט עליון</div>
+        <div class="field">
+          <label>טקסט כפתור ניווט</label>
+          <input type="text" id="txt-nav-cta" value="להזמנה ←">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🎯 Hero — כותרת ותיאור</div>
+        <div class="field">
+          <label>כותרת שורה 1</label>
+          <input type="text" id="txt-hero-line1" value="תזונה">
+        </div>
+        <div class="field">
+          <label>כותרת שורה 2 (איטליק)</label>
+          <input type="text" id="txt-hero-line2" value="מרימה">
+        </div>
+        <div class="field">
+          <label>טקסט תיאור</label>
+          <textarea id="txt-hero-desc">ספר מתכונים שנוצר מאמונה שאוכל בריא יכול ולחייב להיות פשוט, טעים, ובעיקר משמח. כל מתכון כאן ירים לך את האנרגיות ואת הביטחון בעצמך.</textarea>
+        </div>
+        <div class="field">
+          <label>כפתור ראשי</label>
+          <input type="text" id="txt-btn-main" value="רוצה את הספר ←">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">💰 מחיר ורכישה</div>
+        <div class="field">
+          <label>מחיר (₪)</label>
+          <input type="number" id="txt-price" value="79">
+        </div>
+        <div class="field">
+          <label>הערת מחיר (מתחת לסכום)</label>
+          <input type="text" id="txt-price-note" value="תשלום חד פעמי · קובץ PDF דיגיטלי">
+        </div>
+        <div class="field">
+          <label>כפתור CTA תחתון</label>
+          <input type="text" id="txt-btn-cta" value="לרכישת הספר עכשיו ←">
+        </div>
+        <div class="field">
+          <label>טקסט ערבות</label>
+          <input type="text" id="txt-guarantee" value="✓ גישה מיידית לאחר הרכישה · ✓ תמיכה מלאה">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">😟 סקשן "זה מוכר לך?"</div>
+        <div class="field">
+          <label>כותרת משנה (תגית)</label>
+          <input type="text" id="txt-pain-label" value="זה מוכר לך?">
+        </div>
+        <div class="field">
+          <label>תת-כותרת</label>
+          <input type="text" id="txt-pain-sub" value="אם מצאת את עצמך חושבת אחת מהמחשבות האלה — הספר הזה נכתב בדיוק בשבילך.">
+        </div>
+        <div class="field"><label>מחשבה 1</label><input type="text" id="txt-pain-0" value="אין לי זמן לבשל משהו בריא ומזין"></div>
+        <div class="field"><label>מחשבה 2</label><input type="text" id="txt-pain-1" value="כל הדיאטות גורמות לי להרגיש מחסור"></div>
+        <div class="field"><label>מחשבה 3</label><input type="text" id="txt-pain-2" value="אוכל בריא שווה אוכל משעמם וחסר טעם"></div>
+        <div class="field"><label>מחשבה 4</label><input type="text" id="txt-pain-3" value="לא יודעת איך לשלב חלבון בצורה טעימה"></div>
+        <div class="field"><label>מחשבה 5</label><input type="text" id="txt-pain-4" value="מתכונים בריאים דורשים מרכיבים שאין לי"></div>
+        <div class="field"><label>מחשבה 6</label><input type="text" id="txt-pain-5" value="אני אוכלת בריא כמה ימים ואז נופלת"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">✅ סקשן "הפתרון"</div>
+        <div class="field">
+          <label>כותרת</label>
+          <input type="text" id="txt-sol-title" value="אוכל שמרים אותך — גם בגוף וגם בנפש">
+        </div>
+        <div class="field">
+          <label>תיאור</label>
+          <textarea id="txt-sol-body">"תזונה מרימה" נולד מהאמונה שאוכל בריא לא צריך להיות עונש. כל מתכון בספר נבנה כך שיהיה פשוט להכנה, עשיר בחלבון, ומלא טעם אמיתי. כי כשאת אוכלת מתוך בחירה ואהבה לעצמך — הכל מרגיש אחרת.</textarea>
+        </div>
+        <div class="field"><label>✓ פיצ'ר 1</label><input type="text" id="txt-check-0" value="מתכונים עם מרכיבים שיש לך בבית"></div>
+        <div class="field"><label>✓ פיצ'ר 2</label><input type="text" id="txt-check-1" value="עשיר בחלבון — שובע אמיתי לאורך זמן"></div>
+        <div class="field"><label>✓ פיצ'ר 3</label><input type="text" id="txt-check-2" value='כל מתכון כולל "טיפ מרימה" תזונתי'></div>
+        <div class="field"><label>✓ פיצ'ר 4</label><input type="text" id="txt-check-3" value="גישה דיגיטלית מיידית — בכל מכשיר"></div>
+        <div class="field"><label>✓ פיצ'ר 5</label><input type="text" id="txt-check-4" value="ללא הרגשת חסך או ויתור"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🍽️ שמות כרטיסי מתכונים</div>
+        <div class="field"><label>מתכון 1 — שם</label><input type="text" id="txt-rname-0" value="פיצות אישיות מרימות"></div>
+        <div class="field"><label>מתכון 1 — תיאור</label><input type="text" id="txt-rdesc-0" value="בצק קוטג' עשיר בחלבון — קריספי מבחוץ, רך מבפנים"></div>
+        <div class="field"><label>מתכון 2 — שם</label><input type="text" id="txt-rname-1" value="פסטה רוזה מרימה"></div>
+        <div class="field"><label>מתכון 2 — תיאור</label><input type="text" id="txt-rdesc-1" value="רוטב קרמי עשיר בחלבון — בול לחיטוב, בול לנשמה"></div>
+        <div class="field"><label>מתכון 3 — שם</label><input type="text" id="txt-rname-2" value="שווארמה פרגיות ביתית"></div>
+        <div class="field"><label>מתכון 3 — תיאור</label><input type="text" id="txt-rdesc-2" value="עשירה בברזל, דלה בשומן — משביעה לאורך זמן"></div>
+        <div class="field"><label>מתכון 4 — שם</label><input type="text" id="txt-rname-3" value="סלמון בתנור"></div>
+        <div class="field"><label>מתכון 4 — תיאור</label><input type="text" id="txt-rdesc-3" value="5 דקות הכנה — מרגיש כמו ארוחה מושקעת"></div>
+        <div class="field"><label>מתכון 5 — שם</label><input type="text" id="txt-rname-4" value="סלט קינואה ירוק"></div>
+        <div class="field"><label>מתכון 5 — תיאור</label><input type="text" id="txt-rdesc-4" value="טעים ברמות, מזין בטירוף — הסלט שתתאהבי בו"></div>
+        <div class="field"><label>מתכון 6 — שם</label><input type="text" id="txt-rname-5" value="פנקייק חלבון"></div>
+        <div class="field"><label>מתכון 6 — תיאור</label><input type="text" id="txt-rdesc-5" value="ארוחת בוקר שמרגישה כמו פינוק — עם חלבון אמיתי"></div>
+        <div class="field"><label>מתכון 7 — שם</label><input type="text" id="txt-rname-6" value="שניצל קריספי בנינג'ה"></div>
+        <div class="field"><label>מתכון 7 — תיאור</label><input type="text" id="txt-rdesc-6" value="בלי טיגון, עם מלא טעם — המשפחתית המושלמת"></div>
+        <div class="field"><label>מתכון 8 — שם</label><input type="text" id="txt-rname-7" value="קציצות מרימות ברוטב"></div>
+        <div class="field"><label>מתכון 8 — תיאור</label><input type="text" id="txt-rdesc-7" value="כמו של אמא — רק נכונות לגוף שלך"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">👩 על מעיין</div>
+        <div class="field">
+          <label>שם</label>
+          <input type="text" id="txt-maayan-name" value="מעיין סולטאן">
+        </div>
+        <div class="field">
+          <label>ביוגרפיה</label>
+          <textarea id="txt-maayan-bio" style="min-height:100px">מאמנת כושר ותזונה, מייסדת TARIMI — סטודיו לפיטנס ואורח חיים בריא. מאמינה שהדרך לגוף שאת אוהבת מתחילה דרך המטבח, ושאוכל בריא לא צריך להרגיש כמו ויתור.</textarea>
+        </div>
+        <div class="field">
+          <label>ציטוט</label>
+          <textarea id="txt-quote">פיצה שאוכלים ממקום של בחירה ואהבה לעצמי — יכולה להיות מרפאה לנפש.</textarea>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🟤 פס הציטוט (Nude Band)</div>
+        <div class="field">
+          <label>תגית</label>
+          <input type="text" id="txt-tip-label" value="הפילוסופיה של TARIMI">
+        </div>
+        <div class="field">
+          <label>ציטוט</label>
+          <textarea id="txt-tip-text">"תזונה נכונה לא חייבת להיות משעממת, יבשה או חסרת טעם — היא יכולה להיות חכמה, יצירתית, מלאה באהבה לעצמך."</textarea>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">🛒 סקשן רכישה תחתון</div>
+        <div class="field">
+          <label>תגית עליונה</label>
+          <input type="text" id="txt-cta-tag" value="מוכנה להתחיל?">
+        </div>
+        <div class="field">
+          <label>תת-כותרת</label>
+          <textarea id="txt-cta-sub">ספר מתכונים דיגיטלי · גישה מיידית · לצמיתות
+מתכונים עם טיפ תזונתי מרים בכל אחד מהם</textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel-footer">
+    <button class="save-btn" id="save-btn">
+      <span id="save-icon">💾</span>
+      <span id="save-text">החל שינויים</span>
+    </button>
+    <div class="save-note">השינויים מתעדכנים בזמן אמת בדף</div>
+  </div>
+</div>
+
+<!-- TOGGLE BUTTON -->
+<button id="editor-toggle">
+  <span class="toggle-icon">✏️</span>
+  עריכה
+</button>
+
+<!-- ══ PAGE ══ -->
+<nav>
+  <a class="nav-logo" href="#">TARIMI <span>BY MAAYAN SULTAN</span></a>
+  <a class="nav-cta" id="nav-cta-link" href="https://arbox.link/yFl33Tp3" target="_blank">להזמנה ←</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-tag"><span class="tag-dot"></span>ספר מתכונים דיגיטלי · TARIMI</div>
+    <h1 class="hero-title">
+      <span id="hero-line1">תזונה</span>
+      <span class="line2" id="hero-line2">מרימה</span>
+      <span class="line3">FOOD IS JOY · BY MAAYAN SULTAN</span>
+    </h1>
+    <p class="hero-desc" id="hero-desc">
+      ספר מתכונים שנוצר מאמונה שאוכל בריא יכול <strong>ולחייב</strong> להיות פשוט, טעים, ובעיקר משמח.
+      כל מתכון כאן ירים לך את האנרגיות ואת הביטחון בעצמך.
+    </p>
+    <div class="hero-buttons">
+      <a class="btn-primary" id="btn-main" href="https://arbox.link/yFl33Tp3" target="_blank">רוצה את הספר ←</a>
+      <a class="btn-secondary" href="#recipes">הצצה לתוך הספר</a>
+    </div>
+    <div class="hero-stats">
+      <div><span class="stat-num">₪<span id="stat-price">79</span></span><span class="stat-label">מחיר הספר</span></div>
+      <div><span class="stat-num">∞</span><span class="stat-label">גישה לצמיתות</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="book-wrap">
+      <div class="book">
+        <div class="book-content">
+          <span class="book-icon" id="book-icon">🥗</span>
+          <div class="book-name">תזונה<br>מרימה</div>
+          <div class="book-line"></div>
+          <div class="book-sub">TARIMI · Maayan Sultan</div>
+        </div>
+      </div>
+      <div class="chip b"><div class="chip-n">🔥</div><div class="chip-t">מרים אנרגיות</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pain">
+  <div class="sec-label" id="pain-label">זה מוכר לך?</div>
+  <h2 class="sec-title" id="pain-title">המחשבות שמונעות<br>ממך <em>לאכול טוב</em></h2>
+  <p class="sec-sub" id="pain-sub">אם מצאת את עצמך חושבת אחת מהמחשבות האלה — הספר הזה נכתב בדיוק בשבילך.</p>
+  <div class="pain-grid">
+    <div class="pain-card"><p class="pain-text" id="pain-0">אין לי זמן לבשל משהו בריא ומזין</p></div>
+    <div class="pain-card"><p class="pain-text" id="pain-1">כל הדיאטות גורמות לי להרגיש מחסור</p></div>
+    <div class="pain-card"><p class="pain-text" id="pain-2">אוכל בריא שווה אוכל משעמם וחסר טעם</p></div>
+    <div class="pain-card"><p class="pain-text" id="pain-3">לא יודעת איך לשלב חלבון בצורה טעימה</p></div>
+    <div class="pain-card"><p class="pain-text" id="pain-4">מתכונים בריאים דורשים מרכיבים שאין לי</p></div>
+    <div class="pain-card"><p class="pain-text" id="pain-5">אני אוכלת בריא כמה ימים ואז נופלת</p></div>
+  </div>
+</section>
+
+<section class="solution">
+  <div class="split">
+    <div>
+      <div class="food-is-joy" id="fij-label">FOOD IS JOY</div>
+      <h2 class="solution-title" id="sol-title">אוכל שמרים אותך —<br><em>גם בגוף וגם בנפש</em></h2>
+      <p class="solution-body" id="sol-body">"תזונה מרימה" נולד מהאמונה שאוכל בריא לא צריך להיות עונש. <strong>כל מתכון בספר נבנה כך שיהיה פשוט להכנה, עשיר בחלבון, ומלא טעם אמיתי.</strong> כי כשאת אוכלת מתוך בחירה ואהבה לעצמך — הכל מרגיש אחרת.</p>
+      <ul class="check-list" id="check-list">
+        <li id="check-0">מתכונים עם מרכיבים שיש לך בבית</li>
+        <li id="check-1">עשיר בחלבון — שובע אמיתי לאורך זמן</li>
+        <li id="check-2">כל מתכון כולל "טיפ מרימה" תזונתי</li>
+        <li id="check-3">גישה דיגיטלית מיידית — בכל מכשיר</li>
+        <li id="check-4">ללא הרגשת חסך או ויתור</li>
+      </ul>
+    </div>
+    <div class="solution-image-box" id="solution-box">
+      <img class="solution-img" id="solution-img" src="" alt="">
+      <div class="solution-top-img-wrap" id="solution-top-wrap">
+        <img class="solution-top-img" id="solution-top-img" src="" alt="">
+        <div class="solution-top-placeholder" id="solution-top-placeholder">
+          <span>🖼</span>
+          <p>העלי תמונה<br>דרך פאנל העריכה</p>
+        </div>
+      </div>
+      <div class="recipe-preview" id="recipe-preview-card">
+        <div class="recipe-title">פסטה רוזה מרימה</div>
+        <div class="recipe-sub">בול לחיטוב · בול לנשמה</div>
+        <div class="recipe-divider"></div>
+        <ul class="recipe-ingredients">
+          <li>קוטג' 5% (250 גרם)</li>
+          <li>עגבניות שרי חצויות</li>
+          <li>רסק עגבניות</li>
+          <li>פסטה מחיטה מלאה / עדשים</li>
+          <li>פפריקה, אגוז מוסקט, בזיליקום</li>
+        </ul>
+        <div class="recipe-tip">
+          <div class="recipe-tip-label">טיפ מרימה 🌿</div>
+          <div class="recipe-tip-text">הרוטב עשיר בחלבון בזכות הקוטג' — שובע לאורך זמן ומאזן את רמות הסוכר.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="recipes" id="recipes">
+  <div class="sec-label">מה תמצאי בפנים</div>
+  <h2 class="sec-title">המתכונים <em style="color:var(--nude)">שישנו</em> את הצלחת שלך</h2>
+  <div class="recipes-grid" id="recipes-grid">
+    <div class="recipe-card" data-idx="0"><span class="recipe-card-icon">🍕</span><div class="recipe-card-name">פיצות אישיות מרימות</div><div class="recipe-card-desc">בצק קוטג' עשיר בחלבון — קריספי מבחוץ, רך מבפנים</div><span class="recipe-card-tag">ארוחת צהריים</span></div>
+    <div class="recipe-card" data-idx="1"><span class="recipe-card-icon">🍝</span><div class="recipe-card-name">פסטה רוזה מרימה</div><div class="recipe-card-desc">רוטב קרמי עשיר בחלבון — בול לחיטוב, בול לנשמה</div><span class="recipe-card-tag">ארוחת ערב</span></div>
+    <div class="recipe-card" data-idx="2"><span class="recipe-card-icon">🥙</span><div class="recipe-card-name">שווארמה פרגיות ביתית</div><div class="recipe-card-desc">עשירה בברזל, דלה בשומן — משביעה לאורך זמן</div><span class="recipe-card-tag">ארוחה עיקרית</span></div>
+    <div class="recipe-card" data-idx="3"><span class="recipe-card-icon">🐟</span><div class="recipe-card-name">סלמון בתנור</div><div class="recipe-card-desc">5 דקות הכנה — מרגיש כמו ארוחה מושקעת</div><span class="recipe-card-tag">חלבון קל</span></div>
+    <div class="recipe-card" data-idx="4"><span class="recipe-card-icon">🥗</span><div class="recipe-card-name">סלט קינואה ירוק</div><div class="recipe-card-desc">טעים ברמות, מזין בטירוף — הסלט שתתאהבי בו</div><span class="recipe-card-tag">סלט</span></div>
+    <div class="recipe-card" data-idx="5"><span class="recipe-card-icon">🥞</span><div class="recipe-card-name">פנקייק חלבון</div><div class="recipe-card-desc">ארוחת בוקר שמרגישה כמו פינוק — עם חלבון אמיתי</div><span class="recipe-card-tag">ארוחת בוקר</span></div>
+    <div class="recipe-card" data-idx="6"><span class="recipe-card-icon">🍗</span><div class="recipe-card-name">שניצל קריספי בנינג'ה</div><div class="recipe-card-desc">בלי טיגון, עם מלא טעם — המשפחתית המושלמת</div><span class="recipe-card-tag">ארוחה עיקרית</span></div>
+    <div class="recipe-card" data-idx="7"><span class="recipe-card-icon">🫕</span><div class="recipe-card-name">קציצות מרימות ברוטב</div><div class="recipe-card-desc">כמו של אמא — רק נכונות לגוף שלך</div><span class="recipe-card-tag">קלאסיק</span></div>
+  </div>
+</section>
+
+<section class="maayan">
+  <div class="maayan-split">
+    <div class="maayan-image-box" id="maayan-box" data-name="מעיין סולטאן">
+      <span class="photo-icon" id="maayan-placeholder-icon">👩‍🍳</span>
+      <img class="maayan-photo" id="maayan-photo" src="" alt="מעיין סולטאן">
+    </div>
+    <div>
+      <div class="maayan-label">על מי שעומדת מאחורי הספר</div>
+      <h2 class="maayan-name" id="maayan-name-el">מעיין סולטאן</h2>
+      <p class="maayan-bio" id="maayan-bio-el">
+        מאמנת כושר ותזונה, מייסדת <strong>TARIMI</strong> — סטודיו לפיטנס ואורח חיים בריא.
+        מאמינה שהדרך לגוף שאת אוהבת מתחילה דרך המטבח, ושאוכל בריא לא צריך להרגיש כמו ויתור.
+        <br><br>
+        הספר הזה נוצר מהלב — מתוך שנים של חיפוש אחרי מתכונים שמרימים אותי גם בגוף וגם בנפש.
+      </p>
+      <div class="quote-block">
+        <p class="quote-text" id="quote-el">"פיצה שאוכלים ממקום של בחירה ואהבה לעצמי — יכולה להיות מרפאה לנפש."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tip-band">
+  <div class="tip-band-label" id="tip-label">הפילוסופיה של TARIMI</div>
+  <p class="tip-band-text" id="tip-text">"תזונה נכונה לא חייבת להיות משעממת, יבשה או חסרת טעם —<br>היא יכולה להיות חכמה, יצירתית, מלאה באהבה לעצמך."</p>
+</div>
+
+<section class="cta">
+  <div class="cta-tag" id="cta-tag">מוכנה להתחיל?</div>
+  <h2 class="cta-title" id="cta-title">תזונה<br><em>מרימה</em></h2>
+  <p class="cta-sub" id="cta-sub">ספר מתכונים דיגיטלי · גישה מיידית · לצמיתות<br>מתכונים עם טיפ תזונתי מרים בכל אחד מהם</p>
+  <div class="price-box">
+    <span class="price-currency">₪</span>
+    <span class="price-amount" id="cta-price">79</span>
+  </div>
+  <p class="price-note" id="price-note">תשלום חד פעמי · קובץ PDF דיגיטלי</p>
+  <br>
+  <a class="cta-btn" id="btn-cta" href="https://arbox.link/yFl33Tp3" target="_blank">לרכישת הספר עכשיו ←</a>
+  <p class="cta-guarantee" id="cta-guarantee">✓ גישה מיידית לאחר הרכישה &nbsp;·&nbsp; ✓ תמיכה מלאה</p>
+</section>
+
+<footer>
+  <div class="footer-logo">TARIMI · BY MAAYAN SULTAN</div>
+  <div class="footer-copy">© 2025 כל הזכויות שמורות</div>
+</footer>
+
+<script>
+// ── PANEL OPEN/CLOSE ──
+const panel = document.getElementById('editor-panel');
+const toggle = document.getElementById('editor-toggle');
+const closeBtn = document.getElementById('panel-close');
+
+toggle.addEventListener('click', () => {
+  panel.classList.toggle('open');
+  toggle.style.display = panel.classList.contains('open') ? 'none' : 'flex';
+});
+closeBtn.addEventListener('click', () => {
+  panel.classList.remove('open');
+  toggle.style.display = 'flex';
+});
+
+// ── TABS ──
+document.querySelectorAll('.panel-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── IMAGE UPLOAD: MAAYAN ──
+const maayanInput = document.getElementById('maayan-img-input');
+const maayanPreview = document.getElementById('maayan-preview');
+const maayanPhoto = document.getElementById('maayan-photo');
+const maayanIcon = document.getElementById('maayan-placeholder-icon');
+const maayanClear = document.getElementById('maayan-clear');
+const maayanBox = document.getElementById('maayan-box');
+
+maayanInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    // Panel preview
+    maayanPreview.src = src;
+    maayanPreview.classList.add('visible');
+    maayanClear.classList.add('visible');
+    document.querySelector('#maayan-upload-area .img-upload-icon').style.display = 'none';
+    document.querySelector('#maayan-upload-area .img-upload-text').style.display = 'none';
+    document.querySelector('#maayan-upload-area .img-upload-hint').style.display = 'none';
+    // Page update
+    maayanPhoto.src = src;
+    maayanPhoto.classList.add('visible');
+    maayanIcon.style.display = 'none';
+    maayanBox.removeAttribute('data-name');
+  };
+  reader.readAsDataURL(file);
+});
+maayanClear.addEventListener('click', () => {
+  maayanInput.value = '';
+  maayanPreview.src = '';
+  maayanPreview.classList.remove('visible');
+  maayanClear.classList.remove('visible');
+  document.querySelector('#maayan-upload-area .img-upload-icon').style.display = '';
+  document.querySelector('#maayan-upload-area .img-upload-text').style.display = '';
+  document.querySelector('#maayan-upload-area .img-upload-hint').style.display = '';
+  maayanPhoto.src = '';
+  maayanPhoto.classList.remove('visible');
+  maayanIcon.style.display = '';
+  maayanBox.dataset.name = 'מעיין סולטאן';
+});
+
+// ── IMAGE UPLOAD: SOLUTION TOP ──
+const solTopInput = document.getElementById('sol-top-img-input');
+const solTopPreview = document.getElementById('sol-top-preview');
+const solTopImg = document.getElementById('solution-top-img');
+const solTopPlaceholder = document.getElementById('solution-top-placeholder');
+const solTopClear = document.getElementById('sol-top-clear');
+
+solTopInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    solTopPreview.src = src;
+    solTopPreview.classList.add('visible');
+    solTopClear.classList.add('visible');
+    document.querySelector('#sol-top-upload-area .img-upload-icon').style.display = 'none';
+    document.querySelector('#sol-top-upload-area .img-upload-text').style.display = 'none';
+    document.querySelector('#sol-top-upload-area .img-upload-hint').style.display = 'none';
+    solTopImg.src = src;
+    solTopImg.classList.add('visible');
+    solTopPlaceholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+solTopClear.addEventListener('click', () => {
+  solTopInput.value = '';
+  solTopPreview.src = '';
+  solTopPreview.classList.remove('visible');
+  solTopClear.classList.remove('visible');
+  document.querySelector('#sol-top-upload-area .img-upload-icon').style.display = '';
+  document.querySelector('#sol-top-upload-area .img-upload-text').style.display = '';
+  document.querySelector('#sol-top-upload-area .img-upload-hint').style.display = '';
+  solTopImg.src = '';
+  solTopImg.classList.remove('visible');
+  solTopPlaceholder.style.display = '';
+});
+
+// ── IMAGE UPLOAD: SOLUTION (full replace) ──
+const solutionInput = document.getElementById('solution-img-input');
+const solutionPreview = document.getElementById('solution-preview');
+const solutionImg = document.getElementById('solution-img');
+const solutionCard = document.getElementById('recipe-preview-card');
+const solutionClear = document.getElementById('solution-clear');
+
+solutionInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    solutionPreview.src = src;
+    solutionPreview.classList.add('visible');
+    solutionClear.classList.add('visible');
+    document.querySelector('#solution-upload-area .img-upload-icon').style.display = 'none';
+    document.querySelector('#solution-upload-area .img-upload-text').style.display = 'none';
+    document.querySelector('#solution-upload-area .img-upload-hint').style.display = 'none';
+    solutionImg.src = src;
+    solutionImg.classList.add('visible');
+    solutionCard.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+solutionClear.addEventListener('click', () => {
+  solutionInput.value = '';
+  solutionPreview.src = '';
+  solutionPreview.classList.remove('visible');
+  solutionClear.classList.remove('visible');
+  document.querySelector('#solution-upload-area .img-upload-icon').style.display = '';
+  document.querySelector('#solution-upload-area .img-upload-text').style.display = '';
+  document.querySelector('#solution-upload-area .img-upload-hint').style.display = '';
+  solutionImg.src = '';
+  solutionImg.classList.remove('visible');
+  solutionCard.style.display = '';
+});
+
+// ── BOOK EMOJI ──
+const bookIcon = document.getElementById('book-icon');
+document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    bookIcon.textContent = btn.dataset.emoji;
+    document.getElementById('book-emoji-custom').value = '';
+  });
+});
+document.getElementById('book-emoji-custom').addEventListener('input', e => {
+  if (e.target.value) {
+    document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(b => b.classList.remove('selected'));
+    bookIcon.textContent = e.target.value;
+  }
+});
+
+// ── RECIPE ICONS ──
+const recipeCards = document.querySelectorAll('.recipe-card');
+const recipeIconsList = document.getElementById('recipe-icons-list');
+const defaultEmojis = ['🍕','🍝','🥙','🐟','🥗','🥞','🍗','🫕'];
+const recipeNames = ['פיצות אישיות','פסטה רוזה','שווארמה פרגיות','סלמון בתנור','סלט קינואה','פנקייק חלבון','שניצל קריספי','קציצות מרימות'];
+
+recipeNames.forEach((name, idx) => {
+  const item = document.createElement('div');
+  item.className = 'recipe-item';
+  item.innerHTML = `
+    <div class="recipe-item-header">
+      <span class="recipe-item-emoji" id="ri-emoji-${idx}">${defaultEmojis[idx]}</span>
+      <span class="recipe-item-name">${name}</span>
+      <span class="recipe-item-toggle">▼</span>
+    </div>
+    <div class="recipe-item-fields" id="ri-fields-${idx}">
+      <div class="emoji-row" id="ri-row-${idx}">
+        ${['🍕','🍝','🥙','🐟','🥗','🥞','🍗','🫕','🥘','🍲','🥚','🧆','🌮','🥩','🫔','🧁'].map(e=>`<button class="emoji-btn${e===defaultEmojis[idx]?' selected':''}" data-emoji="${e}">${e}</button>`).join('')}
+      </div>
+      <input class="emoji-custom-input" id="ri-custom-${idx}" placeholder="אייקון מותאם...">
+    </div>
+  `;
+  recipeIconsList.appendChild(item);
+
+  // Toggle expand
+  item.querySelector('.recipe-item-header').addEventListener('click', () => {
+    const fields = document.getElementById(`ri-fields-${idx}`);
+    fields.classList.toggle('open');
+    item.querySelector('.recipe-item-toggle').textContent = fields.classList.contains('open') ? '▲' : '▼';
+  });
+
+  // Emoji select
+  item.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      item.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const cardIcon = recipeCards[idx].querySelector('.recipe-card-icon');
+      if (cardIcon) cardIcon.textContent = btn.dataset.emoji;
+      document.getElementById(`ri-emoji-${idx}`).textContent = btn.dataset.emoji;
+      document.getElementById(`ri-custom-${idx}`).value = '';
+    });
+  });
+
+  // Custom emoji
+  document.getElementById(`ri-custom-${idx}`).addEventListener('input', e => {
+    if (e.target.value) {
+      item.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+      const cardIcon = recipeCards[idx].querySelector('.recipe-card-icon');
+      if (cardIcon) cardIcon.textContent = e.target.value;
+      document.getElementById(`ri-emoji-${idx}`).textContent = e.target.value;
+    }
+  });
+});
+
+// ── LIVE TEXT BINDINGS ──
+const bindings = [
+  // [inputId, targetId, updateFn]
+  ['txt-hero-line1',  'hero-line1',    'text'],
+  ['txt-hero-line2',  'hero-line2',    'text'],
+  ['txt-hero-desc',   'hero-desc',     'text'],
+  ['txt-btn-main',    'btn-main',      'text'],
+  ['txt-nav-cta',     'nav-cta-link',  'text'],
+  ['txt-maayan-name', 'maayan-name-el','text'],
+  ['txt-maayan-bio',  'maayan-bio-el', 'text'],
+  ['txt-btn-cta',     'btn-cta',       'text'],
+  ['txt-pain-label',  'pain-label',    'text'],
+  ['txt-pain-sub',    'pain-sub',      'text'],
+  ['txt-pain-0',      'pain-0',        'text'],
+  ['txt-pain-1',      'pain-1',        'text'],
+  ['txt-pain-2',      'pain-2',        'text'],
+  ['txt-pain-3',      'pain-3',        'text'],
+  ['txt-pain-4',      'pain-4',        'text'],
+  ['txt-pain-5',      'pain-5',        'text'],
+  ['txt-sol-title',   'sol-title',     'html'],
+  ['txt-sol-body',    'sol-body',      'text'],
+  ['txt-check-0',     'check-0',       'text'],
+  ['txt-check-1',     'check-1',       'text'],
+  ['txt-check-2',     'check-2',       'text'],
+  ['txt-check-3',     'check-3',       'text'],
+  ['txt-check-4',     'check-4',       'text'],
+  ['txt-tip-label',   'tip-label',     'text'],
+  ['txt-tip-text',    'tip-text',      'text'],
+  ['txt-cta-tag',     'cta-tag',       'text'],
+  ['txt-cta-sub',     'cta-sub',       'html'],
+  ['txt-guarantee',   'cta-guarantee', 'text'],
+  ['txt-price-note',  'price-note',    'text'],
+];
+
+bindings.forEach(([inputId, targetId, type]) => {
+  const input = document.getElementById(inputId);
+  const target = document.getElementById(targetId);
+  if (!input || !target) return;
+  input.addEventListener('input', () => {
+    if (type === 'text') target.textContent = input.value;
+    else if (type === 'html') target.innerHTML = input.value;
+  });
+});
+
+// Quote — keep quotes wrapper
+document.getElementById('txt-quote').addEventListener('input', e => {
+  document.getElementById('quote-el').textContent = '"' + e.target.value + '"';
+});
+
+// Price — update all price displays
+document.getElementById('txt-price').addEventListener('input', e => {
+  const val = e.target.value;
+  document.getElementById('stat-price').textContent = val;
+  document.getElementById('cta-price').textContent = val;
+});
+
+// Recipe names & descs
+for (let i = 0; i < 8; i++) {
+  const nameInput = document.getElementById(`txt-rname-${i}`);
+  const descInput = document.getElementById(`txt-rdesc-${i}`);
+  const card = document.querySelector(`.recipe-card[data-idx="${i}"]`);
+  if (!card) continue;
+  if (nameInput) nameInput.addEventListener('input', e => {
+    card.querySelector('.recipe-card-name').textContent = e.target.value;
+  });
+  if (descInput) descInput.addEventListener('input', e => {
+    card.querySelector('.recipe-card-desc').textContent = e.target.value;
+  });
+}
+
+// ── SAVE BUTTON (visual feedback) ──
+document.getElementById('save-btn').addEventListener('click', () => {
+  const btn = document.getElementById('save-btn');
+  const icon = document.getElementById('save-icon');
+  const text = document.getElementById('save-text');
+  btn.classList.add('saved');
+  icon.textContent = '✓';
+  text.textContent = 'נשמר!';
+  setTimeout(() => {
+    btn.classList.remove('saved');
+    icon.textContent = '💾';
+    text.textContent = 'החל שינויים';
+  }, 2000);
+});
+</script>
+</body>
+</html>
