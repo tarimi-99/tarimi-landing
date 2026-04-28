@@ -12,534 +12,451 @@
   --copper:#C47A55;--copper-dark:#9E6040;
   --cream:#FDFAF7;--cream-2:#F5EEE7;--cream-3:#EDE4DA;
   --dark:#2C2420;--mid:#8A7A72;--light:#BFB0A7;
+  --book-bg:#C9A48A;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Assistant',sans-serif;background:var(--cream);color:var(--dark);direction:rtl;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body{font-family:'Assistant',sans-serif;background:var(--cream);color:var(--dark);direction:rtl;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:80px;}
 
-/* ═══ EDITOR PANEL ═══ */
-#editor-toggle{
-  position:fixed;bottom:24px;left:24px;z-index:9999;
-  background:var(--copper);color:white;
-  border:none;border-radius:50px;
-  padding:12px 20px;font-size:14px;font-weight:700;
-  cursor:pointer;font-family:'Assistant',sans-serif;
-  box-shadow:0 4px 20px rgba(196,122,85,0.4);
-  display:flex;align-items:center;gap:8px;transition:all 0.2s;
-}
-#editor-toggle:hover{background:var(--copper-dark);transform:translateY(-2px)}
-#editor-panel{
-  position:fixed;left:0;top:0;bottom:0;width:320px;z-index:9998;
-  background:#1C1917;color:#F5F0EC;
-  display:flex;flex-direction:column;
-  transform:translateX(-100%);
-  transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
-  box-shadow:4px 0 24px rgba(0,0,0,0.4);
-  font-family:'Assistant',sans-serif;
-}
+/* EDITOR PANEL */
+#editor-toggle{position:fixed;bottom:90px;left:20px;z-index:9999;background:var(--dark);color:white;border:none;border-radius:50px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:8px;}
+#editor-panel{position:fixed;left:0;top:0;bottom:0;width:320px;z-index:9998;background:#1C1917;color:#F5F0EC;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform 0.3s;box-shadow:4px 0 24px rgba(0,0,0,0.4);font-family:'Assistant',sans-serif;}
 #editor-panel.open{transform:translateX(0)}
 .panel-header{padding:1.2rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .panel-title{font-size:15px;font-weight:700}
 .panel-subtitle{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px}
-#panel-close{background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.6);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
-#panel-close:hover{background:rgba(255,255,255,0.15);color:white}
+#panel-close{background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.6);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
 .panel-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
-.panel-tab{flex:1;padding:10px 6px;border:none;background:transparent;color:rgba(255,255,255,0.45);font-family:'Assistant',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;}
+.panel-tab{flex:1;padding:10px 4px;border:none;background:transparent;color:rgba(255,255,255,0.45);font-family:'Assistant',sans-serif;font-size:10px;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;}
 .panel-tab.active{color:var(--nude);border-bottom-color:var(--nude)}
-.panel-tab:hover{color:rgba(255,255,255,0.8)}
 .panel-body{flex:1;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:1.2rem;}
 .panel-body::-webkit-scrollbar{width:4px}
 .panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
 .tab-content{display:none}
 .tab-content.active{display:flex;flex-direction:column;gap:1.2rem}
 .field-group{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1rem;}
-.field-group-title{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--nude);margin-bottom:0.8rem;}
+.field-group-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--nude);margin-bottom:0.8rem;display:block}
 .field{margin-bottom:0.7rem}
 .field:last-child{margin-bottom:0}
 .field label{display:block;font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;}
-.field input[type="text"],.field input[type="number"],.field textarea{
-  width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
-  border-radius:6px;padding:7px 10px;color:#F5F0EC;font-family:'Assistant',sans-serif;
-  font-size:13px;transition:border-color 0.2s;resize:vertical;
-}
-.field input:focus,.field textarea:focus{outline:none;border-color:rgba(201,164,138,0.5);background:rgba(255,255,255,0.1);}
+.field input[type="text"],.field input[type="number"],.field input[type="color"],.field textarea,.field select{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:7px 10px;color:#F5F0EC;font-family:'Assistant',sans-serif;font-size:13px;resize:vertical;}
 .field textarea{min-height:60px}
+.field input[type="color"]{padding:3px;height:36px;cursor:pointer;}
 .img-upload-area{border:1.5px dashed rgba(201,164,138,0.3);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
 .img-upload-area:hover{border-color:rgba(201,164,138,0.6);background:rgba(201,164,138,0.05)}
 .img-upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.img-upload-preview{width:100%;height:120px;object-fit:cover;border-radius:6px;display:none;margin-bottom:8px;}
+.img-upload-preview{width:100%;height:100px;object-fit:cover;border-radius:6px;display:none;margin-bottom:8px;}
 .img-upload-preview.visible{display:block}
-.img-upload-icon{font-size:1.8rem;margin-bottom:6px;display:block}
+.img-upload-icon{font-size:1.6rem;margin-bottom:4px;display:block}
 .img-upload-text{font-size:12px;color:rgba(255,255,255,0.45)}
-.img-upload-hint{font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px}
-.img-clear-btn{display:none;margin-top:6px;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.2);color:rgba(255,120,120,0.8);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Assistant',sans-serif;transition:all 0.2s;}
+.img-upload-hint{font-size:10px;color:rgba(255,255,255,0.25);margin-top:2px}
+.img-clear-btn{display:none;margin-top:6px;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.2);color:rgba(255,120,120,0.8);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Assistant',sans-serif;}
 .img-clear-btn.visible{display:inline-block}
-.emoji-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.emoji-btn{width:34px;height:34px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
-.emoji-btn:hover{background:rgba(255,255,255,0.12);transform:scale(1.1)}
-.emoji-btn.selected{border-color:var(--nude);background:rgba(201,164,138,0.15)}
-.emoji-custom-input{width:100%;margin-top:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:#F5F0EC;font-size:14px;font-family:'Assistant',sans-serif;}
-.emoji-custom-input:focus{outline:none;border-color:rgba(201,164,138,0.5)}
-.recipe-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.8rem;margin-bottom:0.6rem;}
-.recipe-item-header{display:flex;align-items:center;gap:8px;margin-bottom:0.6rem;cursor:pointer;}
-.recipe-item-emoji{font-size:1.3rem}
-.recipe-item-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.8)}
-.recipe-item-toggle{margin-right:auto;font-size:11px;color:rgba(255,255,255,0.3)}
-.recipe-item-fields{display:none}
-.recipe-item-fields.open{display:flex;flex-direction:column;gap:6px}
 .panel-footer{padding:1rem 1.2rem;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
-.save-btn{width:100%;background:var(--copper);color:white;border:none;border-radius:8px;padding:12px;font-family:'Assistant',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.save-btn:hover{background:var(--copper-dark)}
+.save-btn{width:100%;background:var(--copper);color:white;border:none;border-radius:8px;padding:12px;font-family:'Assistant',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .save-btn.saved{background:#2E7D52}
 .save-note{font-size:10px;color:rgba(255,255,255,0.25);text-align:center;margin-top:6px}
 
-/* ═══ NAV ═══ */
-nav{position:fixed;top:0;right:0;left:0;z-index:200;padding:0.9rem 5vw;display:flex;justify-content:space-between;align-items:center;background:rgba(253,250,247,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,164,138,0.15);}
-.nav-logo{font-size:1.4rem;font-weight:800;letter-spacing:0.08em;color:var(--dark);text-decoration:none;}
-.nav-logo span{font-weight:400;color:var(--nude);font-size:0.6em;display:block;letter-spacing:0.18em;margin-top:-3px;}
-.nav-cta{background:var(--copper);color:white;border:none;padding:9px 22px;border-radius:6px;font-family:'Assistant',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block;}
-.nav-cta:hover{background:var(--copper-dark);transform:translateY(-1px)}
+/* NAV */
+nav{position:fixed;top:0;right:0;left:0;z-index:200;padding:0.8rem 5vw;display:flex;justify-content:space-between;align-items:center;background:rgba(253,250,247,0.98);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,164,138,0.15);}
+.nav-logo{font-size:1.3rem;font-weight:800;letter-spacing:0.08em;color:var(--dark);text-decoration:none;line-height:1}
+.nav-logo span{font-weight:400;color:var(--nude);font-size:0.55em;display:block;letter-spacing:0.18em;margin-top:-2px;}
+.nav-cta{background:var(--copper);color:white;border:none;padding:10px 22px;border-radius:6px;font-family:'Assistant',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
 
-/* ═══ HERO ═══ */
-.hero{min-height:100vh;background:var(--cream-3);display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 5vw 5rem;position:relative;overflow:hidden;gap:4rem;}
-.hero::before{content:'';position:absolute;top:-200px;left:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(196,122,85,0.08) 0%,transparent 65%);pointer-events:none;}
-.hero::after{content:'';position:absolute;bottom:-150px;right:-100px;width:450px;height:450px;background:radial-gradient(circle,rgba(201,164,138,0.07) 0%,transparent 65%);pointer-events:none;}
-.hero-text{position:relative;z-index:2;animation:fadeUp 0.8s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(196,122,85,0.1);border:1px solid rgba(196,122,85,0.2);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--copper-dark);letter-spacing:0.08em;margin-bottom:1.6rem;font-weight:600;}
+/* HERO - mobile first */
+.hero{min-height:100vh;background:var(--cream-3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 6vw 3rem;text-align:center;gap:1.5rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-150px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(196,122,85,0.08) 0%,transparent 65%);pointer-events:none;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(196,122,85,0.1);border:1px solid rgba(196,122,85,0.2);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--copper-dark);font-weight:600;}
 .tag-dot{width:5px;height:5px;background:var(--copper);border-radius:50%;animation:blink 2.5s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.hero-title{font-size:clamp(3rem,5.5vw,5.8rem);font-weight:800;line-height:1.0;color:var(--dark);margin-bottom:0.3rem;text-shadow:0 1px 2px rgba(44,36,32,0.08);}
-.hero-title .line2{color:var(--copper);font-weight:300;font-size:0.72em;display:block;margin-top:0.05em;}
-.hero-title .line3{color:var(--light);font-weight:400;font-size:0.3em;display:block;margin-top:0.7em;letter-spacing:0.2em;text-transform:uppercase;}
-.hero-desc{font-size:1.05rem;color:var(--mid);line-height:1.8;margin:1.8rem 0 2.2rem;max-width:430px;font-weight:400;}
-.hero-desc strong{color:var(--dark);font-weight:700}
-.hero-buttons{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-.btn-primary{background:var(--copper);color:white;border:none;padding:15px 36px;border-radius:8px;font-family:'Assistant',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;}
-.btn-primary:hover{background:var(--copper-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,122,85,0.3)}
-.btn-secondary{color:var(--mid);background:transparent;border:1.5px solid rgba(138,122,114,0.3);padding:14px 26px;border-radius:8px;font-family:'Assistant',sans-serif;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;}
-.btn-secondary:hover{border-color:var(--copper);color:var(--copper)}
-.trust-line{font-size:12px;color:var(--light);margin-top:1rem;display:flex;align-items:center;gap:6px;}
-.hero-stats{display:flex;gap:2.5rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(201,164,138,0.2);}
-.stat-num{font-size:2rem;font-weight:800;color:var(--copper);display:block;line-height:1;}
-.stat-label{font-size:11px;color:var(--light);margin-top:4px;letter-spacing:0.04em}
-.hero-visual{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;animation:fadeUp 0.8s 0.2s ease both;}
-.book-wrap{position:relative;width:280px;height:400px}
-.book{width:240px;height:355px;background:linear-gradient(150deg,var(--nude-dark) 0%,var(--nude) 40%,var(--nude-light) 100%);border-radius:4px 14px 14px 4px;box-shadow:-6px 12px 40px rgba(44,36,32,0.2),-2px 4px 10px rgba(44,36,32,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.book::before{content:'';position:absolute;right:0;top:0;width:18px;height:100%;background:rgba(0,0,0,0.15);border-radius:0 14px 14px 0;}
-.book::after{content:'';position:absolute;right:18px;top:0;width:1.5px;height:100%;background:rgba(0,0,0,0.08);}
-.book-content{text-align:center;padding:2.5rem;position:relative;z-index:1}
-.book-icon{font-size:2.5rem;display:block;margin-bottom:1.2rem}
-.book-name{font-size:1.8rem;font-weight:800;color:white;line-height:1.1;}
-.book-line{width:36px;height:1.5px;background:rgba(255,255,255,0.45);margin:1rem auto}
-.book-sub{font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-weight:400;}
-.chip{position:absolute;background:white;border-radius:12px;padding:10px 15px;box-shadow:0 4px 18px rgba(44,36,32,0.12);}
-.chip.b{top:50px;left:-30px;animation:chipFloat 4s ease-in-out infinite;}
-@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.chip-n{font-size:1.5rem;font-weight:800;color:var(--copper);line-height:1}
-.chip-t{font-size:11px;color:var(--mid);margin-top:2px}
+.hero-title{font-size:clamp(3rem,12vw,5.5rem);font-weight:800;line-height:1;color:var(--dark);}
+.hero-title .line2{color:var(--copper);font-weight:300;font-size:0.75em;display:block;margin-top:0.05em;}
+.hero-desc{font-size:1rem;color:var(--mid);line-height:1.7;max-width:480px;font-weight:400;}
+.hero-buttons{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;}
+.btn-primary{background:var(--copper);color:white;border:none;padding:16px 36px;border-radius:10px;font-family:'Assistant',sans-serif;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all 0.25s;}
+.btn-primary:hover{background:var(--copper-dark)}
+.btn-secondary{color:var(--mid);background:transparent;border:1.5px solid rgba(138,122,114,0.3);padding:14px 26px;border-radius:10px;font-family:'Assistant',sans-serif;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:block;text-align:center;}
+.trust-line{font-size:12px;color:var(--light);display:flex;align-items:center;justify-content:center;gap:6px;}
+.hero-stats{display:flex;gap:2rem;padding-top:1.5rem;border-top:1px solid rgba(201,164,138,0.2);}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--copper);display:block;line-height:1;}
+.stat-label{font-size:11px;color:var(--light);margin-top:4px;}
 
-/* ═══ PAIN + SOLUTION MERGED ═══ */
-.pain-solution{background:var(--cream-2);padding:6rem 5vw;}
-.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
-.ps-left{}
-.ps-thoughts{display:flex;flex-direction:column;gap:0.6rem;margin-top:2rem;}
-.ps-thought{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:10px;padding:1rem 1.3rem;font-size:14px;color:var(--mid);transition:all 0.2s;position:relative;overflow:hidden;}
-.ps-thought::before{content:'';position:absolute;right:0;top:0;width:3px;height:0;background:var(--copper);border-radius:0 10px 10px 0;transition:height 0.3s;}
-.ps-thought:hover{border-color:rgba(196,122,85,0.3);transform:translateX(-3px)}
-.ps-thought:hover::before{height:100%}
-.ps-right{}
-.sec-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:0.7rem;}
-.sec-title{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;color:var(--dark);line-height:1.12;margin-bottom:0.8rem;}
+/* BOOK */
+.book-container{perspective:1000px;}
+.book-mockup{width:200px;height:285px;background:var(--book-bg);border-radius:3px 12px 12px 3px;position:relative;transform:rotateY(-8deg);box-shadow:-8px 10px 30px rgba(0,0,0,0.18);overflow:hidden;transition:all 0.3s;}
+.book-cover-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.book-spine{position:absolute;right:0;top:0;bottom:0;width:16px;background:rgba(0,0,0,0.15);z-index:3;border-radius:0 12px 12px 0;}
+.book-content-overlay{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;color:white}
+.book-title-main{font-size:1.9rem;font-weight:800;line-height:1.1;text-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.hidden{display:none!important}
+
+/* HOW IT WORKS */
+.how-it-works{padding:4rem 6vw;background:var(--cream-2);text-align:center;}
+.how-it-works h2{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;margin-bottom:2rem;}
+.steps-grid{display:grid;grid-template-columns:1fr;gap:1.2rem;}
+.step-card{padding:1.5rem;background:white;border-radius:16px;border:1px solid rgba(201,164,138,0.15);text-align:center;}
+.step-num{width:42px;height:42px;background:var(--copper);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-weight:800;font-size:16px;}
+.step-card strong{font-size:15px;display:block;margin-bottom:6px;}
+.step-card p{font-size:13px;color:var(--mid);line-height:1.5;}
+
+/* PAIN + SOLUTION */
+.pain-solution{background:var(--cream-2);padding:4rem 6vw;}
+.ps-grid{display:grid;grid-template-columns:1fr;gap:3rem;}
+.ps-thoughts{display:flex;flex-direction:column;gap:0.6rem;margin-top:1.5rem;}
+.ps-thought{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:10px;padding:1rem 1.2rem;font-size:14px;color:var(--mid);}
+.sec-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:0.6rem;display:block;}
+.sec-title{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:800;color:var(--dark);line-height:1.12;margin-bottom:0.8rem;}
 .sec-title em{color:var(--copper);font-style:normal;}
-.sec-sub{font-size:1rem;color:var(--mid);margin-bottom:2rem;font-weight:400;line-height:1.7;max-width:480px}
-.sol-body{font-size:1rem;color:var(--mid);line-height:1.85;font-weight:400;margin-bottom:2rem}
+.sec-sub{font-size:1rem;color:var(--mid);margin-bottom:1.5rem;font-weight:400;line-height:1.7;}
+.sol-body{font-size:1rem;color:var(--mid);line-height:1.8;font-weight:400;margin-bottom:1.5rem}
 .sol-body strong{color:var(--dark);font-weight:700}
-.check-list{list-style:none;display:flex;flex-direction:column;gap:0.75rem}
-.check-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--mid);line-height:1.5;font-weight:500;}
-.check-list li::before{content:'✓';color:var(--copper);font-weight:700;font-size:14px;flex-shrink:0;margin-top:1px}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:0.7rem}
+.check-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--mid);font-weight:500;}
+.check-list li::before{content:'✓';color:var(--copper);font-weight:700;flex-shrink:0;}
 
-/* ═══ SOLUTION IMAGE BOX ═══ */
-.solution-image-box{background:white;border-radius:20px;overflow:hidden;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:stretch;box-shadow:0 4px 24px rgba(44,36,32,0.06);}
-.solution-top-img-wrap{flex:1;position:relative;overflow:hidden;min-height:0;}
+/* SOLUTION IMAGE BOX */
+.solution-image-box{background:white;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 20px rgba(44,36,32,0.06);margin-top:2rem;}
+.solution-top-img-wrap{height:200px;position:relative;overflow:hidden;}
 .solution-top-img{width:100%;height:100%;object-fit:cover;display:none;}
 .solution-top-img.visible{display:block}
-.solution-top-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--cream-2);}
-.solution-top-placeholder span{font-size:2.5rem;opacity:0.35}
-.solution-top-placeholder p{font-size:12px;color:var(--light);text-align:center;line-height:1.5;}
+.solution-top-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--cream-2);}
+.solution-top-placeholder span{font-size:2rem;opacity:0.35}
+.solution-top-placeholder p{font-size:12px;color:var(--light);text-align:center;}
 .solution-img{width:100%;height:100%;object-fit:cover;display:none;}
 .solution-img.visible{display:block}
-.recipe-preview{padding:1.6rem;flex-shrink:0;}
-.recipe-title{font-size:1.4rem;font-weight:800;color:var(--dark);margin-bottom:0.2rem;}
-.recipe-sub{font-size:12px;color:var(--nude-dark);letter-spacing:0.06em;margin-bottom:1.2rem}
-.recipe-divider{height:1px;background:rgba(201,164,138,0.25);margin-bottom:1.2rem}
+.recipe-preview{padding:1.4rem;}
+.recipe-title{font-size:1.3rem;font-weight:800;color:var(--dark);margin-bottom:0.2rem;}
+.recipe-sub{font-size:12px;color:var(--nude-dark);margin-bottom:1rem;}
+.recipe-divider{height:1px;background:rgba(201,164,138,0.25);margin-bottom:1rem}
 .recipe-ingredients{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
 .recipe-ingredients li{font-size:13px;color:var(--mid);display:flex;align-items:center;gap:8px}
 .recipe-ingredients li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--nude);flex-shrink:0}
-.recipe-tip{margin-top:1.2rem;background:rgba(201,164,138,0.1);border-radius:8px;padding:0.9rem 1.1rem}
-.recipe-tip-label{font-size:11px;font-weight:700;color:var(--copper);margin-bottom:0.3rem}
-.recipe-tip-text{font-size:12px;color:var(--mid);line-height:1.6}
+.recipe-tip{margin-top:1rem;background:rgba(201,164,138,0.1);border-radius:8px;padding:0.8rem 1rem}
+.recipe-tip-label{font-size:11px;font-weight:700;color:var(--copper);margin-bottom:0.2rem}
+.recipe-tip-text{font-size:12px;color:var(--mid);line-height:1.5}
 
-/* ═══ MAAYAN PHOTO ═══ */
+/* RECIPES - mobile first: 1 col, tablet: 2 col */
+.recipes{background:var(--cream);padding:4rem 6vw}
+.recipes-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:2rem;}
+.recipe-card{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:14px;overflow:hidden;transition:all 0.2s;display:flex;flex-direction:column;}
+.recipe-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(44,36,32,0.06)}
+.recipe-img-wrap{width:100%;aspect-ratio:4/3;background:var(--cream-3);overflow:hidden;position:relative;}
+.recipe-img-wrap img{width:100%;height:100%;object-fit:cover;display:none;}
+.recipe-img-wrap img.visible{display:block}
+.recipe-img-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+.recipe-img-placeholder span{font-size:1.5rem;color:var(--light);}
+.recipe-img-placeholder p{font-size:11px;color:var(--light);}
+.recipe-info{padding:1.1rem;}
+.recipe-card-name{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:0.3rem;}
+.recipe-card-desc{font-size:12px;color:var(--mid);line-height:1.4;}
+.recipe-card-tag{display:inline-block;margin-top:0.6rem;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);font-weight:700;}
+
+/* MAAYAN */
+.maayan{background:var(--cream-2);padding:4rem 6vw}
+.maayan-split{display:grid;grid-template-columns:1fr;gap:2.5rem;}
+.maayan-image-box{background:linear-gradient(150deg,var(--nude-dark),var(--nude),var(--nude-light));border-radius:20px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;max-width:320px;margin:0 auto;}
+.maayan-image-box::after{content:attr(data-name);position:absolute;bottom:1rem;right:1rem;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);}
+.photo-icon{font-size:4rem;opacity:0.35}
 .maayan-photo{width:100%;height:100%;object-fit:cover;border-radius:20px;display:none;}
 .maayan-photo.visible{display:block}
-
-/* ═══ RECIPES ═══ */
-.recipes{background:var(--cream);padding:6rem 5vw}
-.recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem;margin-top:3rem;}
-.recipe-card{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:12px;padding:1.4rem 1.6rem;transition:all 0.2s;}
-.recipe-card:hover{border-color:rgba(196,122,85,0.3);transform:translateY(-3px);box-shadow:0 8px 20px rgba(44,36,32,0.06)}
-.recipe-card-icon{font-size:1.8rem;margin-bottom:0.7rem;display:block}
-.recipe-card-name{font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:0.3rem;}
-.recipe-card-desc{font-size:12px;color:var(--mid);line-height:1.5;font-weight:400}
-.recipe-card-tag{display:inline-block;margin-top:0.8rem;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);font-weight:700;}
-
-/* ═══ MAAYAN ═══ */
-.maayan{background:var(--cream-2);padding:6rem 5vw}
-.maayan-split{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:center}
-.maayan-image-box{background:linear-gradient(150deg,var(--nude-dark),var(--nude),var(--nude-light));border-radius:20px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.maayan-image-box::after{content:attr(data-name);position:absolute;bottom:1.5rem;right:1.5rem;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.04em;}
-.photo-icon{font-size:5rem;opacity:0.35}
-.maayan-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:0.6rem}
-.maayan-name{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:1.3rem;}
-.maayan-bio{font-size:1rem;color:var(--mid);line-height:1.9;font-weight:400;margin-bottom:1.5rem}
+.maayan-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:0.5rem;display:block}
+.maayan-name{font-size:clamp(1.8rem,6vw,2.5rem);font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:1rem;}
+.maayan-bio{font-size:1rem;color:var(--mid);line-height:1.8;font-weight:400;margin-bottom:1.2rem}
 .maayan-bio strong{color:var(--dark);font-weight:700}
-.quote-block{background:white;border-right:3px solid var(--copper);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-top:1.2rem;box-shadow:0 2px 12px rgba(44,36,32,0.05);}
-.quote-text{font-size:1.1rem;font-weight:500;color:var(--dark);line-height:1.6;font-style:normal;}
+.quote-block{background:white;border-right:3px solid var(--copper);border-radius:0 10px 10px 0;padding:1rem 1.2rem;box-shadow:0 2px 10px rgba(44,36,32,0.05);}
+.quote-text{font-size:1rem;font-weight:500;color:var(--dark);line-height:1.6;}
 
-/* ═══ SOCIAL PROOF ═══ */
-.social-proof{background:var(--cream);padding:6rem 5vw}
-.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:3rem;}
-.testimonial-card{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:14px;padding:1.5rem;transition:all 0.2s;}
-.testimonial-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(196,122,85,0.08)}
-.testimonial-stars{color:var(--copper);font-size:13px;margin-bottom:0.7rem;letter-spacing:2px}
-.testimonial-text{font-size:14px;color:var(--dark);line-height:1.7;font-weight:400;margin-bottom:0.8rem;}
+/* SOCIAL PROOF */
+.social-proof{background:var(--cream);padding:4rem 6vw}
+.testimonials-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:2rem;}
+.testimonial-card{background:white;border:1px solid rgba(201,164,138,0.18);border-radius:14px;padding:1.3rem;}
+.testimonial-stars{color:var(--copper);font-size:13px;margin-bottom:0.6rem;letter-spacing:2px}
+.testimonial-text{font-size:14px;color:var(--dark);line-height:1.7;margin-bottom:0.6rem;}
 .testimonial-name{font-size:12px;color:var(--copper);font-weight:700;}
 
-/* ═══ SUCCESS STORIES ═══ */
-.success-section{background:var(--cream-2);padding:6rem 5vw}
-.success-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin-top:3rem;}
-.success-card{background:white;border-radius:16px;padding:1.8rem;border:1px solid rgba(201,164,138,0.15);transition:all 0.2s;}
-.success-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(44,36,32,0.06)}
-.success-before-after{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
-.success-tag{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
+/* SUCCESS STORIES */
+.success-section{background:var(--cream-2);padding:4rem 6vw}
+.success-grid{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:2rem;}
+.success-card{background:white;border-radius:16px;padding:1.5rem;border:1px solid rgba(201,164,138,0.15);}
+.success-before-after{display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;flex-wrap:wrap;}
+.success-tag{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
 .success-tag.before{background:rgba(138,122,114,0.12);color:var(--mid);}
 .success-tag.after{background:rgba(196,122,85,0.12);color:var(--copper);}
 .success-arrow{color:var(--light);font-size:12px}
-.success-text{font-size:14px;color:var(--dark);line-height:1.7;font-weight:400;margin-bottom:0.8rem;}
+.success-text{font-size:14px;color:var(--dark);line-height:1.7;margin-bottom:0.6rem;}
 .success-name{font-size:12px;color:var(--copper);font-weight:700;}
-.success-image-slot{border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:var(--cream-2);margin-top:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px dashed rgba(201,164,138,0.3);}
+.success-image-slot{border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:var(--cream-2);margin-top:0.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px dashed rgba(201,164,138,0.3);}
 .success-image-slot img{width:100%;height:100%;object-fit:cover}
 .success-img-placeholder{text-align:center;color:var(--light);font-size:13px;padding:1rem;}
-.success-img-placeholder span{font-size:1.8rem;display:block;margin-bottom:4px}
+.success-img-placeholder span{font-size:1.5rem;display:block;margin-bottom:4px}
 
-/* ═══ WHATSAPP ═══ */
-.whatsapp-section{background:white;padding:6rem 5vw}
-.wa-intro{font-size:1rem;color:var(--mid);margin-bottom:2.5rem;line-height:1.7;max-width:500px}
-.wa-grid{display:flex;flex-direction:column;gap:1rem;max-width:520px}
-.wa-bubble{background:#DCF8C6;border-radius:18px 18px 4px 18px;padding:1rem 1.3rem;position:relative;align-self:flex-start;max-width:88%;box-shadow:0 1px 4px rgba(0,0,0,0.08);opacity:0;transform:translateY(16px);transition:opacity 0.5s ease, transform 0.5s ease;}
+/* WHATSAPP */
+.whatsapp-section{background:white;padding:4rem 6vw}
+.wa-intro{font-size:1rem;color:var(--mid);margin-bottom:2rem;line-height:1.7;max-width:480px}
+.wa-grid{display:flex;flex-direction:column;gap:1rem;max-width:480px}
+.wa-bubble{background:#DCF8C6;border-radius:18px 18px 4px 18px;padding:1rem 1.2rem;align-self:flex-start;max-width:90%;box-shadow:0 1px 4px rgba(0,0,0,0.08);opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s;}
 .wa-bubble.visible{opacity:1;transform:translateY(0)}
 .wa-bubble-text{font-size:14px;color:#1a1a1a;line-height:1.6}
 .wa-bubble-time{font-size:10px;color:#999;text-align:left;margin-top:4px}
 .wa-bubble-name{font-size:11px;color:#075E54;font-weight:700;margin-bottom:4px}
-.wa-image-slot{max-width:85%;cursor:pointer;opacity:0;transform:translateY(16px);transition:opacity 0.5s ease, transform 0.5s ease;}
+.wa-image-slot{max-width:88%;cursor:pointer;opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s;}
 .wa-image-slot.visible{opacity:1;transform:translateY(0)}
-.wa-image-slot img{width:100%;border-radius:14px;display:block;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
-.wa-image-placeholder{background:rgba(201,164,138,0.08);border:2px dashed rgba(201,164,138,0.3);border-radius:14px;padding:1.8rem 1.5rem;text-align:center;color:var(--light);font-size:13px;transition:all 0.2s;}
-.wa-image-placeholder:hover{background:rgba(201,164,138,0.15)}
-.wa-image-placeholder span{font-size:2rem;display:block;margin-bottom:6px}
+.wa-image-slot img{width:100%;border-radius:14px;display:block;}
+.wa-image-placeholder{background:rgba(201,164,138,0.08);border:2px dashed rgba(201,164,138,0.3);border-radius:14px;padding:1.5rem;text-align:center;color:var(--light);font-size:13px;}
+.wa-image-placeholder span{font-size:1.8rem;display:block;margin-bottom:4px}
 .wa-upload-input{display:none}
 
-/* ═══ TIP BAND ═══ */
-.tip-band{background:var(--nude);padding:2.5rem 5vw;text-align:center}
-.tip-band-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.5rem;font-weight:600}
-.tip-band-text{font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:500;color:white;line-height:1.6;}
+/* TIP BAND */
+.tip-band{background:var(--nude);padding:2.5rem 6vw;text-align:center}
+.tip-band-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.4rem;font-weight:600;display:block}
+.tip-band-text{font-size:clamp(1rem,3.5vw,1.5rem);font-weight:500;color:white;line-height:1.6;}
 
-/* ═══ FAQ ═══ */
-.faq-section{background:var(--cream-2);padding:6rem 5vw}
-.faq-list{max-width:700px;margin:0 auto;margin-top:3rem;display:flex;flex-direction:column;gap:0.8rem;}
+/* FAQ */
+.faq-section{background:var(--cream-2);padding:4rem 6vw}
+.faq-list{max-width:680px;margin:2rem auto 0;display:flex;flex-direction:column;gap:0.8rem;}
 .faq-item{background:white;border-radius:12px;border:1px solid rgba(201,164,138,0.18);overflow:hidden;}
-.faq-question{padding:1.2rem 1.5rem;font-size:15px;font-weight:700;color:var(--dark);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color 0.2s;gap:1rem;}
+.faq-question{padding:1.1rem 1.3rem;font-size:15px;font-weight:700;color:var(--dark);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
 .faq-question:hover{color:var(--copper)}
-.faq-arrow{font-size:18px;color:var(--copper);transition:transform 0.3s;flex-shrink:0;font-weight:400;}
+.faq-arrow{font-size:18px;color:var(--copper);transition:transform 0.3s;flex-shrink:0;}
 .faq-item.open .faq-arrow{transform:rotate(45deg)}
-.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s ease, padding 0.35s ease;padding:0 1.5rem;font-size:14px;color:var(--mid);line-height:1.75;font-weight:400;}
-.faq-item.open .faq-answer{max-height:300px;padding:0 1.5rem 1.3rem;}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.35s ease;padding:0 1.3rem;font-size:14px;color:var(--mid);line-height:1.75;}
+.faq-item.open .faq-answer{max-height:300px;padding:0 1.3rem 1.2rem;}
 
-/* ═══ CTA ═══ */
-.cta{background:var(--cream-3);padding:7rem 5vw;text-align:center;position:relative;overflow:hidden;}
-.cta-tag{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:1rem}
-.cta-title{font-size:clamp(2.2rem,5vw,4.5rem);font-weight:800;color:var(--dark);line-height:1.05;margin-bottom:0.5rem;}
+/* CTA */
+.cta{background:var(--cream-3);padding:5rem 6vw;text-align:center;}
+.cta-tag{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--copper);font-weight:700;margin-bottom:0.8rem;display:block}
+.cta-title{font-size:clamp(2rem,8vw,4.5rem);font-weight:800;color:var(--dark);line-height:1.05;margin-bottom:0.5rem;}
 .cta-title em{color:var(--copper);font-style:normal;}
-.cta-sub{font-size:1rem;color:var(--mid);margin-bottom:2.5rem;font-weight:400;line-height:1.7}
-.price-box{display:inline-flex;align-items:baseline;gap:6px;margin-bottom:0.5rem}
+.cta-sub{font-size:1rem;color:var(--mid);margin-bottom:2rem;font-weight:400;line-height:1.7}
+.price-box{display:inline-flex;align-items:baseline;gap:6px;margin-bottom:0.4rem}
 .price-currency{font-size:1.5rem;color:var(--copper);font-weight:600}
 .price-amount{font-size:5rem;font-weight:800;color:var(--dark);line-height:1;}
-.price-value-line{font-size:14px;color:var(--mid);margin-bottom:0.5rem;font-weight:400;}
+.price-value-line{font-size:14px;color:var(--mid);margin-bottom:0.4rem;font-weight:400;}
 .price-value-line strong{color:var(--copper);font-weight:700}
 .price-note{font-size:13px;color:var(--light);margin-bottom:2rem}
-.cta-btn{background:var(--copper);color:white;border:none;padding:18px 56px;border-radius:10px;font-family:'Assistant',sans-serif;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;box-shadow:0 4px 20px rgba(196,122,85,0.25);}
-.cta-btn:hover{background:var(--copper-dark);transform:translateY(-3px);box-shadow:0 8px 32px rgba(196,122,85,0.35)}
-.cta-guarantee{font-size:12px;color:var(--light);margin-top:1rem}
+.cta-btn{background:var(--copper);color:white;border:none;padding:18px 40px;border-radius:10px;font-family:'Assistant',sans-serif;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.25s;width:100%;max-width:360px;}
+.cta-btn:hover{background:var(--copper-dark)}
 .trust-badge{font-size:13px;color:var(--mid);margin-top:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;}
+.cta-guarantee{font-size:12px;color:var(--light);margin-top:0.8rem}
 
-/* ═══ FOOTER ═══ */
-footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
-.footer-logo{font-size:1.1rem;font-weight:800;letter-spacing:0.1em;color:rgba(250,247,244,0.4);}
+/* FOOTER */
+footer{background:var(--dark);padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;}
+.footer-logo{font-size:1rem;font-weight:800;letter-spacing:0.1em;color:rgba(250,247,244,0.4);}
 .footer-copy{font-size:12px;color:rgba(250,247,244,0.2)}
 
-/* ═══ STICKY MOBILE CTA ═══ */
-#sticky-cta{
-  display:none;position:fixed;bottom:0;left:0;right:0;z-index:8000;
-  background:white;padding:12px 16px;
-  box-shadow:0 -4px 24px rgba(44,36,32,0.12);
-  border-top:1px solid rgba(201,164,138,0.2);
-  flex-direction:column;align-items:center;gap:6px;
-}
-#sticky-cta .sticky-btn{
-  background:var(--copper);color:white;border:none;
-  width:100%;max-width:400px;padding:14px;border-radius:10px;
-  font-family:'Assistant',sans-serif;font-size:16px;font-weight:700;
-  cursor:pointer;text-decoration:none;display:block;text-align:center;
-  transition:background 0.2s;
-}
-#sticky-cta .sticky-btn:hover{background:var(--copper-dark)}
-#sticky-cta .sticky-trust{font-size:11px;color:var(--light);}
-@media(max-width:768px){
-  #sticky-cta{display:flex}
-  .hero{grid-template-columns:1fr;padding:6rem 6vw 4rem;gap:3rem}
-  .hero-visual{order:-1}
-  .ps-grid{grid-template-columns:1fr}
-  .maayan-split{grid-template-columns:1fr}
-  .maayan-image-box{aspect-ratio:1/1}
-  .hero-stats{gap:1.5rem}
-  .recipes-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
-  .testimonials-grid{grid-template-columns:1fr}
-  .success-grid{grid-template-columns:1fr}
-  footer{flex-direction:column;text-align:center}
-  #editor-panel{width:290px}
-  body{padding-bottom:80px}
+/* STICKY CTA - always shown mobile */
+#sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:8000;background:white;padding:10px 16px;box-shadow:0 -4px 20px rgba(44,36,32,0.12);border-top:1px solid rgba(201,164,138,0.2);display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sticky-btn{background:var(--copper);color:white;border:none;width:100%;max-width:400px;padding:15px;border-radius:10px;font-family:'Assistant',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;text-align:center;}
+.sticky-trust{font-size:11px;color:var(--light);}
+
+/* DESKTOP OVERRIDES */
+@media(min-width:768px){
+  .hero{flex-direction:row;text-align:right;padding:7rem 5vw 5rem;gap:4rem;min-height:100vh;}
+  .hero-buttons{flex-direction:row;width:auto;max-width:none;}
+  .btn-primary,.btn-secondary{display:inline-block;text-align:center;}
+  .trust-line{justify-content:flex-start;}
+  .hero-stats{justify-content:flex-start;}
+  .steps-grid{grid-template-columns:repeat(3,1fr);}
+  .ps-grid{grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .recipes-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));}
+  .maayan-split{grid-template-columns:1fr 1.3fr;gap:4rem;}
+  .maayan-image-box{max-width:none;margin:0;}
+  .testimonials-grid{grid-template-columns:repeat(2,1fr);}
+  .success-grid{grid-template-columns:repeat(3,1fr);}
+  footer{flex-direction:row;}
+  #sticky-cta{display:none;}
+  body{padding-bottom:0;}
+  .hero-title{font-size:clamp(3rem,5.5vw,5.8rem);}
+  #editor-toggle{bottom:24px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ EDITOR PANEL ═══ -->
+<!-- EDITOR PANEL -->
 <div id="editor-panel">
   <div class="panel-header">
     <div>
       <div class="panel-title">✏️ עורך הדף</div>
-      <div class="panel-subtitle">תמונות, אייקונים, טקסטים</div>
+      <div class="panel-subtitle">תמונות, עיצוב, טקסטים</div>
     </div>
     <button id="panel-close">✕</button>
   </div>
   <div class="panel-tabs">
     <button class="panel-tab active" data-tab="images">🖼 תמונות</button>
-    <button class="panel-tab" data-tab="icons">😊 אייקונים</button>
-    <button class="panel-tab" data-tab="texts">✍️ טקסטים</button>
+    <button class="panel-tab" data-tab="book">📚 ספר</button>
+    <button class="panel-tab" data-tab="recipes">🍽 מתכונים</button>
+    <button class="panel-tab" data-tab="texts">✍️ טקסט</button>
   </div>
   <div class="panel-body">
 
     <!-- IMAGES TAB -->
     <div class="tab-content active" id="tab-images">
       <div class="field-group">
-        <div class="field-group-title">📸 תמונת מעיין</div>
+        <span class="field-group-title">📸 תמונת מעיין</span>
         <div class="img-upload-area" id="maayan-upload-area">
           <input type="file" accept="image/*" id="maayan-img-input">
           <img class="img-upload-preview" id="maayan-preview" src="" alt="">
           <span class="img-upload-icon">👩‍🍳</span>
-          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-text">לחצי להעלאה</div>
           <div class="img-upload-hint">JPG, PNG, WEBP</div>
         </div>
         <button class="img-clear-btn" id="maayan-clear">✕ הסרה</button>
       </div>
       <div class="field-group">
-        <div class="field-group-title">🖼 תמונה עליונה (מעל המתכון)</div>
+        <span class="field-group-title">🖼 תמונה מעל המתכון</span>
         <div class="img-upload-area" id="sol-top-upload-area">
           <input type="file" accept="image/*" id="sol-top-img-input">
           <img class="img-upload-preview" id="sol-top-preview" src="" alt="">
           <span class="img-upload-icon">📷</span>
-          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-text">לחצי להעלאה</div>
           <div class="img-upload-hint">תמונת אוכל / ספר</div>
         </div>
         <button class="img-clear-btn" id="sol-top-clear">✕ הסרה</button>
       </div>
       <div class="field-group">
-        <div class="field-group-title">🔄 החלפה מלאה (קופסת הפתרון)</div>
+        <span class="field-group-title">🔄 החלפה מלאה של קופסת הפתרון</span>
         <div class="img-upload-area" id="solution-upload-area">
           <input type="file" accept="image/*" id="solution-img-input">
           <img class="img-upload-preview" id="solution-preview" src="" alt="">
           <span class="img-upload-icon">🥗</span>
-          <div class="img-upload-text">לחצי להעלאת תמונה</div>
+          <div class="img-upload-text">לחצי להעלאה</div>
           <div class="img-upload-hint">מחליפה את כל הקופסה</div>
         </div>
         <button class="img-clear-btn" id="solution-clear">✕ הסרה</button>
       </div>
     </div>
 
-    <!-- ICONS TAB -->
-    <div class="tab-content" id="tab-icons">
+    <!-- BOOK TAB -->
+    <div class="tab-content" id="tab-book">
       <div class="field-group">
-        <div class="field-group-title">📚 אייקון הספר</div>
-        <div class="emoji-row" id="book-emoji-row">
-          <button class="emoji-btn selected" data-emoji="🥗">🥗</button>
-          <button class="emoji-btn" data-emoji="🍽️">🍽️</button>
-          <button class="emoji-btn" data-emoji="🥘">🥘</button>
-          <button class="emoji-btn" data-emoji="🍳">🍳</button>
-          <button class="emoji-btn" data-emoji="🥑">🥑</button>
-          <button class="emoji-btn" data-emoji="🌿">🌿</button>
-          <button class="emoji-btn" data-emoji="💪">💪</button>
-          <button class="emoji-btn" data-emoji="✨">✨</button>
+        <span class="field-group-title">🎨 עיצוב הספר</span>
+        <div class="field">
+          <label>צבע כריכה</label>
+          <input type="color" id="book-color" value="#C9A48A">
         </div>
-        <input class="emoji-custom-input" id="book-emoji-custom" placeholder="אייקון מותאם..." maxlength="4">
+        <div class="field">
+          <label>כותרת על הספר</label>
+          <input type="text" id="book-title-input" value="תזונה מרימה">
+        </div>
+        <div class="field">
+          <label>סוג מדיה לכריכה</label>
+          <select id="book-media-type">
+            <option value="none">ללא מדיה (צבע בלבד)</option>
+            <option value="image">תמונה</option>
+            <option value="video">סרטון (MP4)</option>
+          </select>
+        </div>
+        <div class="field" id="book-img-field" style="display:none">
+          <label>העלאת תמונה לכריכה</label>
+          <div class="img-upload-area" id="book-img-area">
+            <input type="file" accept="image/*" id="book-img-input">
+            <img class="img-upload-preview" id="book-img-preview" src="" alt="">
+            <span class="img-upload-icon">🖼</span>
+            <div class="img-upload-text">לחצי להעלאה</div>
+          </div>
+        </div>
+        <div class="field" id="book-video-field" style="display:none">
+          <label>העלאת סרטון (MP4)</label>
+          <div class="img-upload-area" id="book-video-area">
+            <input type="file" accept="video/mp4" id="book-video-input">
+            <span class="img-upload-icon">🎬</span>
+            <div class="img-upload-text">לחצי להעלאת סרטון</div>
+            <div class="img-upload-hint">MP4 בלבד</div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- RECIPES TAB -->
+    <div class="tab-content" id="tab-recipes">
       <div class="field-group">
-        <div class="field-group-title">🍽️ אייקוני מתכונים</div>
-        <div id="recipe-icons-list"></div>
+        <span class="field-group-title">🍽️ תמונות מתכונים</span>
+        <p style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:0.8rem">לחצי על כל מתכון להעלאת תמונה</p>
+        <div id="recipe-upload-list"></div>
       </div>
     </div>
 
     <!-- TEXTS TAB -->
     <div class="tab-content" id="tab-texts">
-
       <div class="field-group">
-        <div class="field-group-title">🏠 ניווט</div>
-        <div class="field"><label>כפתור ניווט</label><input type="text" id="txt-nav-cta" value="להזמנה ←"></div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-group-title">🎯 Hero</div>
+        <span class="field-group-title">🎯 Hero</span>
         <div class="field"><label>כותרת שורה 1</label><input type="text" id="txt-hero-line1" value="תזונה"></div>
         <div class="field"><label>כותרת שורה 2</label><input type="text" id="txt-hero-line2" value="מרימה"></div>
-        <div class="field"><label>תיאור</label><textarea id="txt-hero-desc">ספר מתכונים שנולד מאמונה שאוכל בריא יכול להיות פשוט, טעים ומשמח. כל מתכון כאן ירים לך את האנרגיה ואת הביטחון בעצמך.</textarea></div>
+        <div class="field"><label>תיאור</label><textarea id="txt-hero-desc">ספר מתכונים שנולד מאמונה שאוכל בריא יכול להיות פשוט, טעים ומשמח.</textarea></div>
         <div class="field"><label>כפתור ראשי</label><input type="text" id="txt-btn-main" value="רוצה את הספר ←"></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">😟 מחשבות הכאב</div>
-        <div class="field"><label>מחשבה 1</label><input type="text" id="txt-pain-0" value="אין לי זמן לבשל משהו בריא"></div>
-        <div class="field"><label>מחשבה 2</label><input type="text" id="txt-pain-1" value="כל הדיאטות מגיעות עם תחושת מחסור"></div>
-        <div class="field"><label>מחשבה 3</label><input type="text" id="txt-pain-2" value="אוכל בריא שווה משעמם וחסר טעם"></div>
-        <div class="field"><label>מחשבה 4</label><input type="text" id="txt-pain-3" value="לא יודעת איך לשלב חלבון בצורה טעימה"></div>
-        <div class="field"><label>מחשבה 5</label><input type="text" id="txt-pain-4" value="מתכונים בריאים דורשים מרכיבים שאין לי"></div>
-        <div class="field"><label>מחשבה 6</label><input type="text" id="txt-pain-5" value="מתחילה בריא ונופלת אחרי כמה ימים"></div>
+        <span class="field-group-title">😟 מחשבות כאב</span>
+        <div class="field"><label>1</label><input type="text" id="txt-pain-0" value="אין לי זמן לבשל משהו בריא"></div>
+        <div class="field"><label>2</label><input type="text" id="txt-pain-1" value="כל הדיאטות מגיעות עם תחושת מחסור"></div>
+        <div class="field"><label>3</label><input type="text" id="txt-pain-2" value="אוכל בריא שווה משעמם וחסר טעם"></div>
+        <div class="field"><label>4</label><input type="text" id="txt-pain-3" value="לא יודעת איך לשלב חלבון בצורה טעימה"></div>
+        <div class="field"><label>5</label><input type="text" id="txt-pain-4" value="מתכונים בריאים דורשים מרכיבים שאין לי"></div>
+        <div class="field"><label>6</label><input type="text" id="txt-pain-5" value="מתחילה בריא ונופלת אחרי כמה ימים"></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">✅ הפתרון</div>
-        <div class="field"><label>כותרת</label><input type="text" id="txt-sol-title" value="אוכל שמרים אותך — גם בגוף גם בנפש"></div>
-        <div class="field"><label>תיאור</label><textarea id="txt-sol-body">הספר נולד מהאמונה שאוכל בריא לא צריך להיות עונש. כל מתכון כאן פשוט להכנה, עשיר בחלבון ומלא טעם. כי כשאת אוכלת מתוך אהבה לעצמך — הכל משתנה.</textarea></div>
+        <span class="field-group-title">✅ פתרון</span>
+        <div class="field"><label>כותרת</label><input type="text" id="txt-sol-title" value="אוכל שמרים אותך גם בגוף גם בנפש"></div>
+        <div class="field"><label>תיאור</label><textarea id="txt-sol-body">הספר נולד מהאמונה שאוכל בריא לא צריך להיות עונש. כל מתכון כאן פשוט להכנה, עשיר בחלבון ומלא טעם.</textarea></div>
         <div class="field"><label>פיצ'ר 1</label><input type="text" id="txt-check-0" value="מרכיבים שיש לך בבית"></div>
         <div class="field"><label>פיצ'ר 2</label><input type="text" id="txt-check-1" value="עשיר בחלבון — שובע אמיתי"></div>
         <div class="field"><label>פיצ'ר 3</label><input type="text" id="txt-check-2" value="טיפ תזונתי מרים בכל מתכון"></div>
         <div class="field"><label>פיצ'ר 4</label><input type="text" id="txt-check-3" value="גישה מיידית מכל מכשיר"></div>
         <div class="field"><label>פיצ'ר 5</label><input type="text" id="txt-check-4" value="בלי הרגשת חסך או ויתור"></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">🍽️ מתכונים</div>
-        <div class="field"><label>שם 1</label><input type="text" id="txt-rname-0" value="פיצות אישיות מרימות"></div>
-        <div class="field"><label>תיאור 1</label><input type="text" id="txt-rdesc-0" value="בצק קוטג' עשיר בחלבון — קריספי ומשביע"></div>
-        <div class="field"><label>שם 2</label><input type="text" id="txt-rname-1" value="פסטה רוזה מרימה"></div>
-        <div class="field"><label>תיאור 2</label><input type="text" id="txt-rdesc-1" value="קרמי, עשיר בחלבון, בול לנשמה"></div>
-        <div class="field"><label>שם 3</label><input type="text" id="txt-rname-2" value="שווארמה פרגיות ביתית"></div>
-        <div class="field"><label>תיאור 3</label><input type="text" id="txt-rdesc-2" value="עשירה בברזל, דלה בשומן"></div>
-        <div class="field"><label>שם 4</label><input type="text" id="txt-rname-3" value="סלמון בתנור"></div>
-        <div class="field"><label>תיאור 4</label><input type="text" id="txt-rdesc-3" value="5 דקות הכנה, ארוחה מרשימה"></div>
-        <div class="field"><label>שם 5</label><input type="text" id="txt-rname-4" value="סלט קינואה ירוק"></div>
-        <div class="field"><label>תיאור 5</label><input type="text" id="txt-rdesc-4" value="טעים ברמות, מזין בטירוף"></div>
-        <div class="field"><label>שם 6</label><input type="text" id="txt-rname-5" value="פנקייק חלבון"></div>
-        <div class="field"><label>תיאור 6</label><input type="text" id="txt-rdesc-5" value="בוקר שמרגיש כמו פינוק אמיתי"></div>
-        <div class="field"><label>שם 7</label><input type="text" id="txt-rname-6" value="שניצל קריספי בנינג'ה"></div>
-        <div class="field"><label>תיאור 6</label><input type="text" id="txt-rdesc-6" value="בלי טיגון, עם מלא טעם"></div>
-        <div class="field"><label>שם 8</label><input type="text" id="txt-rname-7" value="קציצות מרימות ברוטב"></div>
-        <div class="field"><label>תיאור 8</label><input type="text" id="txt-rdesc-7" value="כמו של אמא, רק נכון לגוף שלך"></div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-group-title">👩 על מעיין</div>
+        <span class="field-group-title">👩 על מעיין</span>
         <div class="field"><label>שם</label><input type="text" id="txt-maayan-name" value="מעיין סולטאן"></div>
-        <div class="field"><label>ביוגרפיה</label><textarea id="txt-maayan-bio" style="min-height:100px">מאמנת כושר ותזונה, מייסדת TARIMI. מאמינה שהדרך לגוף שאת אוהבת מתחילה במטבח. הספר הזה נוצר מהלב.</textarea></div>
+        <div class="field"><label>ביוגרפיה</label><textarea id="txt-maayan-bio">מאמנת כושר ותזונה, מייסדת TARIMI. הספר הזה נוצר מהלב.</textarea></div>
         <div class="field"><label>ציטוט</label><textarea id="txt-quote">פיצה שאוכלים ממקום של בחירה ואהבה לעצמי — יכולה להיות מרפאה לנפש.</textarea></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">⭐ עדויות</div>
-        <div class="field"><label>עדות 1 — טקסט</label><textarea id="txt-test-0">הכנתי את פיצת הקוטג' ביום הראשון וכבר הרגשתי שונה. לא האמנתי שאוכל בריא יכול להיות כל כך טעים.</textarea></div>
-        <div class="field"><label>עדות 1 — שם</label><input type="text" id="txt-test-name-0" value="שירה, 28"></div>
-        <div class="field"><label>עדות 2 — טקסט</label><textarea id="txt-test-1">סוף סוף ספר שמדבר אלי. פשוט, נגיש, בלי תחושת חסך. הפסטה רוזה כבר שגרה אצלי.</textarea></div>
-        <div class="field"><label>עדות 2 — שם</label><input type="text" id="txt-test-name-1" value="מיכל, 33"></div>
-        <div class="field"><label>עדות 3 — טקסט</label><textarea id="txt-test-2">קניתי בהתלבטות ואחרי יומיים שלחתי לכל החברות. שווה כל שקל.</textarea></div>
-        <div class="field"><label>עדות 3 — שם</label><input type="text" id="txt-test-name-2" value="נועה, 25"></div>
-        <div class="field"><label>עדות 4 — טקסט</label><textarea id="txt-test-3">הילדים אוכלים את השניצל הבריא ולא מבינים שזה בריא. ניצחון!</textarea></div>
-        <div class="field"><label>עדות 4 — שם</label><input type="text" id="txt-test-name-3" value="רחל, 41"></div>
+        <span class="field-group-title">⭐ עדויות</span>
+        <div class="field"><label>עדות 1</label><textarea id="txt-test-0">הכנתי את פיצת הקוטג' ביום הראשון וכבר הרגשתי שונה.</textarea></div>
+        <div class="field"><label>שם 1</label><input type="text" id="txt-test-name-0" value="שירה, 28"></div>
+        <div class="field"><label>עדות 2</label><textarea id="txt-test-1">סוף סוף ספר שמדבר אלי. פשוט, נגיש, בלי תחושת חסך.</textarea></div>
+        <div class="field"><label>שם 2</label><input type="text" id="txt-test-name-1" value="מיכל, 33"></div>
+        <div class="field"><label>עדות 3</label><textarea id="txt-test-2">קניתי בהתלבטות ואחרי יומיים שלחתי לכל החברות.</textarea></div>
+        <div class="field"><label>שם 3</label><input type="text" id="txt-test-name-2" value="נועה, 25"></div>
+        <div class="field"><label>עדות 4</label><textarea id="txt-test-3">הילדים אוכלים את השניצל הבריא ולא מבינים שזה בריא!</textarea></div>
+        <div class="field"><label>שם 4</label><input type="text" id="txt-test-name-3" value="רחל, 41"></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">🌟 סיפורי הצלחה</div>
-        <div class="field"><label>סיפור 1 — לפני</label><input type="text" id="txt-success-before-0" value="אכלה בלי סדר"></div>
-        <div class="field"><label>סיפור 1 — אחרי</label><input type="text" id="txt-success-after-0" value="שגרת ארוחות מסודרת"></div>
-        <div class="field"><label>סיפור 1 — טקסט</label><textarea id="txt-success-0">תוך שבוע הרגשתי שיש לי שגרה. ידעתי מה לאכול ואיך להכין. לא ייאמן כמה שינוי קטן עושה הבדל גדול.</textarea></div>
-        <div class="field"><label>סיפור 1 — שם</label><input type="text" id="txt-success-name-0" value="דנה, 30"></div>
-        <div class="field"><label>סיפור 2 — לפני</label><input type="text" id="txt-success-before-1" value="דילגה על ארוחות"></div>
-        <div class="field"><label>סיפור 2 — אחרי</label><input type="text" id="txt-success-after-1" value="אוכלת 3 ארוחות ביום"></div>
-        <div class="field"><label>סיפור 2 — טקסט</label><textarea id="txt-success-1">סוף סוף יש לי מתכונים שאני אוהבת ויודעת להכין. זה נתן לי ביטחון ואנרגיה שלא היתה לי שנים.</textarea></div>
-        <div class="field"><label>סיפור 2 — שם</label><input type="text" id="txt-success-name-1" value="יעל, 36"></div>
-        <div class="field"><label>סיפור 3 — לפני</label><input type="text" id="txt-success-before-2" value="חטפה בין הארוחות"></div>
-        <div class="field"><label>סיפור 3 — אחרי</label><input type="text" id="txt-success-after-2" value="שובע אמיתי לאורך היום"></div>
-        <div class="field"><label>סיפור 3 — טקסט</label><textarea id="txt-success-2">המתכונים עשירים בחלבון ובאמת משביעים. אני לא חושבת על אוכל כל הזמן כמו שהייתי רגילה.</textarea></div>
-        <div class="field"><label>סיפור 3 — שם</label><input type="text" id="txt-success-name-2" value="אורית, 44"></div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-group-title">💬 הודעות וואטסאפ</div>
+        <span class="field-group-title">💬 הודעות WhatsApp</span>
         <div class="field"><label>הודעה 1 — שם</label><input type="text" id="txt-wa-name-0" value="שירה 🌿"></div>
         <div class="field"><label>הודעה 1 — טקסט</label><textarea id="txt-wa-text-0">מעיין!! עשיתי את הפסטה רוזה ואני לא מאמינה כמה היא טעימה ❤️</textarea></div>
         <div class="field"><label>הודעה 2 — שם</label><input type="text" id="txt-wa-name-1" value="לירון 💪"></div>
         <div class="field"><label>הודעה 2 — טקסט</label><textarea id="txt-wa-text-1">שבוע ראשון עם הספר וירדתי 1.5 קילו בלי להרגיש שאני בדיאטה 🙏</textarea></div>
-        <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:6px">לצילומי מסך — לחצי ישירות על ה+ בדף</p>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">❓ שאלות ותשובות</div>
+        <span class="field-group-title">❓ FAQ</span>
         <div class="field"><label>שאלה 1</label><input type="text" id="txt-faq-q-0" value="מה מקבלת בדיוק?"></div>
-        <div class="field"><label>תשובה 1</label><textarea id="txt-faq-a-0">קובץ PDF דיגיטלי עם 20 מתכונים מלאים כולל מצרכים, הוראות הכנה וטיפ תזונתי מרים בכל מתכון. הגישה לצמיתות.</textarea></div>
-        <div class="field"><label>שאלה 2</label><input type="text" id="txt-faq-q-1" value="האם המתכונים מורכבים להכנה?"></div>
-        <div class="field"><label>תשובה 2</label><textarea id="txt-faq-a-1">בכלל לא. כל המתכונים נבנו במיוחד לאנשים עם חיים עמוסים. כל מתכון לוקח בין 10 ל-30 דקות.</textarea></div>
+        <div class="field"><label>תשובה 1</label><textarea id="txt-faq-a-0">קובץ PDF עם 20 מתכונים מלאים. גישה לצמיתות.</textarea></div>
+        <div class="field"><label>שאלה 2</label><input type="text" id="txt-faq-q-1" value="האם המתכונים מורכבים?"></div>
+        <div class="field"><label>תשובה 2</label><textarea id="txt-faq-a-1">בכלל לא. כל מתכון בין 10 ל-30 דקות.</textarea></div>
         <div class="field"><label>שאלה 3</label><input type="text" id="txt-faq-q-2" value="מתי מקבלת את הספר?"></div>
-        <div class="field"><label>תשובה 3</label><textarea id="txt-faq-a-2">מיד לאחר הרכישה מגיע למייל קישור להורדה. ההורדה מיידית וזמינה מכל מכשיר.</textarea></div>
-        <div class="field"><label>שאלה 4</label><input type="text" id="txt-faq-q-3" value="האם יש כפל ביוקר?"></div>
-        <div class="field"><label>תשובה 4</label><textarea id="txt-faq-a-3">לא. מדובר בתשלום חד פעמי של 79 שקל בלבד. ללא מנוי, ללא חיובים חוזרים.</textarea></div>
+        <div class="field"><label>תשובה 3</label><textarea id="txt-faq-a-2">מיד לאחר הרכישה — קישור להורדה ישירות למייל.</textarea></div>
+        <div class="field"><label>שאלה 4</label><input type="text" id="txt-faq-q-3" value="האם יש חיובים חוזרים?"></div>
+        <div class="field"><label>תשובה 4</label><textarea id="txt-faq-a-3">לא. תשלום חד פעמי של 79 שקל בלבד.</textarea></div>
       </div>
-
       <div class="field-group">
-        <div class="field-group-title">🟤 פס הציטוט</div>
-        <div class="field"><label>תגית</label><input type="text" id="txt-tip-label" value="הפילוסופיה של TARIMI"></div>
-        <div class="field"><label>ציטוט</label><textarea id="txt-tip-text">תזונה נכונה לא חייבת להיות משעממת. היא יכולה להיות חכמה, יצירתית ומלאה באהבה לעצמך.</textarea></div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-group-title">💰 מחיר ורכישה</div>
+        <span class="field-group-title">💰 מחיר</span>
         <div class="field"><label>מחיר (₪)</label><input type="number" id="txt-price" value="79"></div>
-        <div class="field"><label>שורת ערך המחיר</label><input type="text" id="txt-price-value" value="פחות מהמחיר של סלט בבית קפה — ויש לך סדר ותוכנית לכל החיים"></div>
-        <div class="field"><label>הערת מחיר</label><input type="text" id="txt-price-note" value="תשלום חד פעמי · PDF דיגיטלי"></div>
-        <div class="field"><label>כפתור CTA תחתון</label><input type="text" id="txt-btn-cta" value="לרכישת הספר עכשיו ←"></div>
-        <div class="field"><label>שורת אמון</label><input type="text" id="txt-guarantee" value="✓ גישה מיידית לאחר הרכישה · ✓ תמיכה מלאה"></div>
+        <div class="field"><label>שורת ערך</label><input type="text" id="txt-price-value" value="פחות מהמחיר של סלט בבית קפה — ויש לך סדר לכל החיים"></div>
+        <div class="field"><label>כפתור CTA</label><input type="text" id="txt-btn-cta" value="לרכישת הספר עכשיו ←"></div>
       </div>
-
     </div>
+
   </div>
   <div class="panel-footer">
-    <button class="save-btn" id="save-btn">
-      <span id="save-icon">💾</span>
-      <span id="save-text">החל שינויים</span>
-    </button>
+    <button class="save-btn" id="save-btn">💾 <span id="save-text">החל שינויים</span></button>
     <div class="save-note">השינויים מתעדכנים בזמן אמת</div>
   </div>
 </div>
 
 <button id="editor-toggle">✏️ עריכה</button>
 
-<!-- ═══ PAGE ═══ -->
+<!-- PAGE -->
 <nav>
   <a class="nav-logo" href="#">TARIMI <span>BY MAAYAN SULTAN</span></a>
   <a class="nav-cta" id="nav-cta-link" href="https://arbox.link/yFl33Tp3" target="_blank">להזמנה ←</a>
@@ -547,48 +464,52 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
 
 <!-- HERO -->
 <section class="hero" id="hero-section">
-  <div class="hero-text">
+  <div class="hero-text" style="max-width:520px">
     <div class="hero-tag"><span class="tag-dot"></span>ספר מתכונים דיגיטלי · TARIMI</div>
-    <h1 class="hero-title">
+    <h1 class="hero-title" style="margin-top:1.2rem">
       <span id="hero-line1">תזונה</span>
       <span class="line2" id="hero-line2">מרימה</span>
-      <span class="line3">FOOD IS JOY · BY MAAYAN SULTAN</span>
     </h1>
-    <p class="hero-desc" id="hero-desc">
-      ספר מתכונים שנולד מאמונה שאוכל בריא יכול להיות פשוט, טעים ומשמח.
-      כל מתכון כאן ירים לך את האנרגיה ואת הביטחון בעצמך.
-    </p>
-    <div class="hero-buttons">
+    <p class="hero-desc" style="margin-top:1rem" id="hero-desc">ספר מתכונים שנולד מאמונה שאוכל בריא יכול להיות פשוט, טעים ומשמח.</p>
+    <div class="hero-buttons" style="margin-top:1.8rem">
       <a class="btn-primary" id="btn-main" href="https://arbox.link/yFl33Tp3" target="_blank">רוצה את הספר ←</a>
       <a class="btn-secondary" href="#recipes">הצצה לתוך הספר</a>
     </div>
-    <div class="trust-line">🔒 רכישה מאובטחת | קבלת הקובץ מידית למייל</div>
-    <div class="hero-stats">
-      <div><span class="stat-num">20</span><span class="stat-label">מתכונים מרימים</span></div>
-      <div><span class="stat-num">₪<span id="stat-price">79</span></span><span class="stat-label">מחיר הספר</span></div>
-      <div><span class="stat-num">∞</span><span class="stat-label">גישה לצמיתות</span></div>
+    <div class="trust-line" style="margin-top:1rem">🔒 רכישה מאובטחת | קבלת הקובץ מידית למייל</div>
+    <div class="hero-stats" style="margin-top:1.5rem">
+      <div><span class="stat-num">20</span><span class="stat-label">מתכונים</span></div>
+      <div><span class="stat-num">₪<span id="stat-price">79</span></span><span class="stat-label">מחיר</span></div>
+      <div><span class="stat-num">∞</span><span class="stat-label">גישה</span></div>
     </div>
   </div>
-  <div class="hero-visual">
-    <div class="book-wrap">
-      <div class="book">
-        <div class="book-content">
-          <span class="book-icon" id="book-icon">🥗</span>
-          <div class="book-name">תזונה<br>מרימה</div>
-          <div class="book-line"></div>
-          <div class="book-sub">TARIMI · Maayan Sultan</div>
-        </div>
+  <div class="book-container">
+    <div class="book-mockup" id="book-mockup">
+      <div class="book-spine"></div>
+      <img id="book-img-display" class="book-cover-media hidden" src="" alt="">
+      <video id="book-video-display" class="book-cover-media hidden" autoplay loop muted playsinline></video>
+      <div class="book-content-overlay">
+        <div class="book-title-main" id="book-title-display">תזונה<br>מרימה</div>
+        <div style="font-size:10px;margin-top:10px;letter-spacing:2px;opacity:0.75">MAAYAN SULTAN</div>
       </div>
-      <div class="chip b"><div class="chip-n">🔥</div><div class="chip-t">מרים אנרגיות</div></div>
     </div>
   </div>
 </section>
 
-<!-- PAIN + SOLUTION MERGED -->
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <h2>איך זה עובד?</h2>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">1</div><strong>רכישה מאובטחת</strong><p>תשלום חד פעמי מהיר דרך Arbox</p></div>
+    <div class="step-card"><div class="step-num">2</div><strong>מייל בדרך אלייך</strong><p>הספר (PDF) מחכה לך במייל מיד לאחר הרכישה</p></div>
+    <div class="step-card"><div class="step-num">3</div><strong>מתחילים לבשל</strong><p>ניגשים למטבח ומכינים אוכל שמרים לך!</p></div>
+  </div>
+</section>
+
+<!-- PAIN + SOLUTION -->
 <section class="pain-solution">
   <div class="ps-grid">
     <div class="ps-left">
-      <div class="sec-label" id="pain-label">זה מוכר לך?</div>
+      <span class="sec-label" id="pain-label">זה מוכר לך?</span>
       <h2 class="sec-title" id="pain-title">המחשבות שמונעות<br>ממך <em>לאכול טוב</em></h2>
       <p class="sec-sub" id="pain-sub">אם חושבת אחת מהמחשבות האלה — הספר הזה בשבילך.</p>
       <div class="ps-thoughts">
@@ -601,43 +522,36 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
       </div>
     </div>
     <div class="ps-right">
-      <div class="food-is-joy" id="fij-label">FOOD IS JOY</div>
-      <h2 class="solution-title" id="sol-title">אוכל שמרים אותך<br>גם בגוף גם בנפש</h2>
-      <p class="sol-body" id="sol-body">הספר נולד מהאמונה שאוכל בריא לא צריך להיות עונש. <strong>כל מתכון כאן פשוט להכנה, עשיר בחלבון ומלא טעם.</strong> כי כשאת אוכלת מתוך אהבה לעצמך — הכל משתנה.</p>
-      <ul class="check-list" id="check-list">
+      <span class="sec-label">FOOD IS JOY</span>
+      <h2 class="sec-title" id="sol-title">אוכל שמרים אותך<br>גם בגוף גם בנפש</h2>
+      <p class="sol-body" id="sol-body">הספר נולד מהאמונה שאוכל בריא לא צריך להיות עונש. <strong>כל מתכון כאן פשוט להכנה, עשיר בחלבון ומלא טעם.</strong></p>
+      <ul class="check-list">
         <li id="check-0">מרכיבים שיש לך בבית</li>
         <li id="check-1">עשיר בחלבון — שובע אמיתי</li>
         <li id="check-2">טיפ תזונתי מרים בכל מתכון</li>
         <li id="check-3">גישה מיידית מכל מכשיר</li>
         <li id="check-4">בלי הרגשת חסך או ויתור</li>
       </ul>
-    </div>
-  </div>
-  <!-- solution image box below -->
-  <div style="margin-top:4rem;max-width:480px;margin-right:auto;">
-    <div class="solution-image-box" id="solution-box">
-      <img class="solution-img" id="solution-img" src="" alt="">
-      <div class="solution-top-img-wrap" id="solution-top-wrap">
-        <img class="solution-top-img" id="solution-top-img" src="" alt="">
-        <div class="solution-top-placeholder" id="solution-top-placeholder">
-          <span>🖼</span>
-          <p>העלי תמונה דרך פאנל העריכה</p>
+      <div class="solution-image-box" id="solution-box">
+        <img class="solution-img hidden" id="solution-img" src="" alt="">
+        <div class="solution-top-img-wrap" id="solution-top-wrap">
+          <img class="solution-top-img" id="solution-top-img" src="" alt="">
+          <div class="solution-top-placeholder" id="solution-top-placeholder">
+            <span>🖼</span><p>העלי תמונה דרך פאנל העריכה</p>
+          </div>
         </div>
-      </div>
-      <div class="recipe-preview" id="recipe-preview-card">
-        <div class="recipe-title">פסטה רוזה מרימה</div>
-        <div class="recipe-sub">בול לחיטוב · בול לנשמה</div>
-        <div class="recipe-divider"></div>
-        <ul class="recipe-ingredients">
-          <li>קוטג' 5% (250 גרם)</li>
-          <li>עגבניות שרי חצויות</li>
-          <li>רסק עגבניות</li>
-          <li>פסטה מחיטה מלאה</li>
-          <li>פפריקה, אגוז מוסקט, בזיליקום</li>
-        </ul>
-        <div class="recipe-tip">
-          <div class="recipe-tip-label">טיפ מרימה 🌿</div>
-          <div class="recipe-tip-text">הרוטב עשיר בחלבון בזכות הקוטג' — שובע לאורך זמן.</div>
+        <div class="recipe-preview" id="recipe-preview-card">
+          <div class="recipe-title">פסטה רוזה מרימה</div>
+          <div class="recipe-sub">בול לחיטוב · בול לנשמה</div>
+          <div class="recipe-divider"></div>
+          <ul class="recipe-ingredients">
+            <li>קוטג' 5% (250 גרם)</li><li>עגבניות שרי חצויות</li>
+            <li>רסק עגבניות</li><li>פסטה מחיטה מלאה</li>
+          </ul>
+          <div class="recipe-tip">
+            <div class="recipe-tip-label">טיפ מרימה 🌿</div>
+            <div class="recipe-tip-text">הרוטב עשיר בחלבון בזכות הקוטג' — שובע לאורך זמן.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -646,18 +560,9 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
 
 <!-- RECIPES -->
 <section class="recipes" id="recipes">
-  <div class="sec-label">מה תמצאי בפנים</div>
+  <span class="sec-label">מה תמצאי בפנים</span>
   <h2 class="sec-title">20 מתכונים שישנו את הצלחת שלך</h2>
-  <div class="recipes-grid" id="recipes-grid">
-    <div class="recipe-card" data-idx="0"><span class="recipe-card-icon">🍕</span><div class="recipe-card-name">פיצות אישיות מרימות</div><div class="recipe-card-desc">בצק קוטג' עשיר בחלבון — קריספי ומשביע</div><span class="recipe-card-tag">ארוחת צהריים</span></div>
-    <div class="recipe-card" data-idx="1"><span class="recipe-card-icon">🍝</span><div class="recipe-card-name">פסטה רוזה מרימה</div><div class="recipe-card-desc">קרמי, עשיר בחלבון, בול לנשמה</div><span class="recipe-card-tag">ארוחת ערב</span></div>
-    <div class="recipe-card" data-idx="2"><span class="recipe-card-icon">🥙</span><div class="recipe-card-name">שווארמה פרגיות ביתית</div><div class="recipe-card-desc">עשירה בברזל, דלה בשומן</div><span class="recipe-card-tag">ארוחה עיקרית</span></div>
-    <div class="recipe-card" data-idx="3"><span class="recipe-card-icon">🐟</span><div class="recipe-card-name">סלמון בתנור</div><div class="recipe-card-desc">5 דקות הכנה, ארוחה מרשימה</div><span class="recipe-card-tag">חלבון קל</span></div>
-    <div class="recipe-card" data-idx="4"><span class="recipe-card-icon">🥗</span><div class="recipe-card-name">סלט קינואה ירוק</div><div class="recipe-card-desc">טעים ברמות, מזין בטירוף</div><span class="recipe-card-tag">סלט</span></div>
-    <div class="recipe-card" data-idx="5"><span class="recipe-card-icon">🥞</span><div class="recipe-card-name">פנקייק חלבון</div><div class="recipe-card-desc">בוקר שמרגיש כמו פינוק אמיתי</div><span class="recipe-card-tag">ארוחת בוקר</span></div>
-    <div class="recipe-card" data-idx="6"><span class="recipe-card-icon">🍗</span><div class="recipe-card-name">שניצל קריספי בנינג'ה</div><div class="recipe-card-desc">בלי טיגון, עם מלא טעם</div><span class="recipe-card-tag">ארוחה עיקרית</span></div>
-    <div class="recipe-card" data-idx="7"><span class="recipe-card-icon">🫕</span><div class="recipe-card-name">קציצות מרימות ברוטב</div><div class="recipe-card-desc">כמו של אמא, רק נכון לגוף שלך</div><span class="recipe-card-tag">קלאסיק</span></div>
-  </div>
+  <div class="recipes-grid" id="recipes-grid"></div>
 </section>
 
 <!-- MAAYAN -->
@@ -665,17 +570,12 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
   <div class="maayan-split">
     <div class="maayan-image-box" id="maayan-box" data-name="מעיין סולטאן">
       <span class="photo-icon" id="maayan-placeholder-icon">👩‍🍳</span>
-      <img class="maayan-photo" id="maayan-photo" src="" alt="מעיין סולטאן">
+      <img class="maayan-photo" id="maayan-photo" src="" alt="">
     </div>
     <div>
-      <div class="maayan-label">על מי שעומדת מאחורי הספר</div>
+      <span class="maayan-label">על מי שעומדת מאחורי הספר</span>
       <h2 class="maayan-name" id="maayan-name-el">מעיין סולטאן</h2>
-      <p class="maayan-bio" id="maayan-bio-el">
-        מאמנת כושר ותזונה, מייסדת <strong>TARIMI</strong>.
-        מאמינה שהדרך לגוף שאת אוהבת מתחילה במטבח — ושאוכל בריא לא צריך להרגיש כמו ויתור.
-        <br><br>
-        הספר הזה נוצר מהלב, מתוך מתכונים שמרימים אותי כל יום מחדש.
-      </p>
+      <p class="maayan-bio" id="maayan-bio-el">מאמנת כושר ותזונה, מייסדת <strong>TARIMI</strong>. מאמינה שהדרך לגוף שאת אוהבת מתחילה במטבח. הספר הזה נוצר מהלב.</p>
       <div class="quote-block">
         <p class="quote-text" id="quote-el">"פיצה שאוכלים ממקום של בחירה ואהבה לעצמי — יכולה להיות מרפאה לנפש."</p>
       </div>
@@ -685,57 +585,45 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
 
 <!-- SOCIAL PROOF -->
 <section class="social-proof">
-  <div class="sec-label">הוכחה חברתית</div>
+  <span class="sec-label">הוכחה חברתית</span>
   <h2 class="sec-title">זה מה שקרה לבנות <em>שהתחילו</em></h2>
-  <div class="testimonials-grid" id="testimonials-grid">
-    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-0">הכנתי את פיצת הקוטג' ביום הראשון וכבר הרגשתי שונה. לא האמנתי שאוכל בריא יכול להיות כל כך טעים.</p><div class="testimonial-name" id="test-name-0">שירה, 28</div></div>
-    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-1">סוף סוף ספר שמדבר אלי. פשוט, נגיש, בלי תחושת חסך. הפסטה רוזה כבר שגרה אצלי.</p><div class="testimonial-name" id="test-name-1">מיכל, 33</div></div>
-    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-2">קניתי בהתלבטות ואחרי יומיים שלחתי לכל החברות. שווה כל שקל.</p><div class="testimonial-name" id="test-name-2">נועה, 25</div></div>
-    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-3">הילדים אוכלים את השניצל הבריא ולא מבינים שזה בריא. ניצחון!</p><div class="testimonial-name" id="test-name-3">רחל, 41</div></div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-0">הכנתי את פיצת הקוטג' ביום הראשון וכבר הרגשתי שונה.</p><div class="testimonial-name" id="test-name-0">שירה, 28</div></div>
+    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-1">סוף סוף ספר שמדבר אלי. פשוט, נגיש, בלי תחושת חסך.</p><div class="testimonial-name" id="test-name-1">מיכל, 33</div></div>
+    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-2">קניתי בהתלבטות ואחרי יומיים שלחתי לכל החברות.</p><div class="testimonial-name" id="test-name-2">נועה, 25</div></div>
+    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text" id="test-3">הילדים אוכלים את השניצל הבריא ולא מבינים שזה בריא!</p><div class="testimonial-name" id="test-name-3">רחל, 41</div></div>
   </div>
 </section>
 
 <!-- SUCCESS STORIES -->
 <section class="success-section">
-  <div class="sec-label">סיפורי הצלחה</div>
+  <span class="sec-label">סיפורי הצלחה</span>
   <h2 class="sec-title">כשאוכל טוב <em>הכל מסתדר</em></h2>
   <div class="success-grid">
     <div class="success-card">
-      <div class="success-before-after">
-        <span class="success-tag before" id="txt-display-before-0">אכלה בלי סדר</span>
-        <span class="success-arrow">→</span>
-        <span class="success-tag after" id="txt-display-after-0">שגרת ארוחות מסודרת</span>
-      </div>
-      <p class="success-text" id="success-0">תוך שבוע הרגשתי שיש לי שגרה. ידעתי מה לאכול ואיך להכין. לא ייאמן כמה שינוי קטן עושה הבדל גדול.</p>
+      <div class="success-before-after"><span class="success-tag before" id="txt-display-before-0">אכלה בלי סדר</span><span class="success-arrow">→</span><span class="success-tag after" id="txt-display-after-0">שגרת ארוחות מסודרת</span></div>
+      <p class="success-text" id="success-0">תוך שבוע הרגשתי שיש לי שגרה. לא ייאמן כמה שינוי קטן עושה הבדל.</p>
       <div class="success-name" id="success-name-0">דנה, 30</div>
       <div class="success-image-slot" id="success-img-0" onclick="triggerSuccessUpload(0)">
-        <input type="file" accept="image/*" class="wa-upload-input" id="success-file-0" style="display:none">
+        <input type="file" accept="image/*" id="success-file-0" style="display:none">
         <div class="success-img-placeholder"><span>📸</span>הוסיפי תמונה</div>
       </div>
     </div>
     <div class="success-card">
-      <div class="success-before-after">
-        <span class="success-tag before" id="txt-display-before-1">דילגה על ארוחות</span>
-        <span class="success-arrow">→</span>
-        <span class="success-tag after" id="txt-display-after-1">אוכלת 3 ארוחות ביום</span>
-      </div>
-      <p class="success-text" id="success-1">סוף סוף יש לי מתכונים שאני אוהבת ויודעת להכין. זה נתן לי ביטחון ואנרגיה שלא היתה לי שנים.</p>
+      <div class="success-before-after"><span class="success-tag before" id="txt-display-before-1">דילגה על ארוחות</span><span class="success-arrow">→</span><span class="success-tag after" id="txt-display-after-1">אוכלת 3 ארוחות ביום</span></div>
+      <p class="success-text" id="success-1">סוף סוף יש לי מתכונים שאני אוהבת ויודעת להכין.</p>
       <div class="success-name" id="success-name-1">יעל, 36</div>
       <div class="success-image-slot" id="success-img-1" onclick="triggerSuccessUpload(1)">
-        <input type="file" accept="image/*" class="wa-upload-input" id="success-file-1" style="display:none">
+        <input type="file" accept="image/*" id="success-file-1" style="display:none">
         <div class="success-img-placeholder"><span>📸</span>הוסיפי תמונה</div>
       </div>
     </div>
     <div class="success-card">
-      <div class="success-before-after">
-        <span class="success-tag before" id="txt-display-before-2">חטפה בין הארוחות</span>
-        <span class="success-arrow">→</span>
-        <span class="success-tag after" id="txt-display-after-2">שובע אמיתי לאורך היום</span>
-      </div>
-      <p class="success-text" id="success-2">המתכונים עשירים בחלבון ובאמת משביעים. אני לא חושבת על אוכל כל הזמן כמו שהייתי רגילה.</p>
+      <div class="success-before-after"><span class="success-tag before" id="txt-display-before-2">חטפה בין הארוחות</span><span class="success-arrow">→</span><span class="success-tag after" id="txt-display-after-2">שובע אמיתי לאורך היום</span></div>
+      <p class="success-text" id="success-2">המתכונים עשירים בחלבון ובאמת משביעים.</p>
       <div class="success-name" id="success-name-2">אורית, 44</div>
       <div class="success-image-slot" id="success-img-2" onclick="triggerSuccessUpload(2)">
-        <input type="file" accept="image/*" class="wa-upload-input" id="success-file-2" style="display:none">
+        <input type="file" accept="image/*" id="success-file-2" style="display:none">
         <div class="success-img-placeholder"><span>📸</span>הוסיפי תמונה</div>
       </div>
     </div>
@@ -744,80 +632,46 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
 
 <!-- WHATSAPP -->
 <section class="whatsapp-section">
-  <div class="sec-label">ממש מהחיים</div>
+  <span class="sec-label">ממש מהחיים</span>
   <h2 class="sec-title">הודעות <em>אמיתיות</em></h2>
-  <p class="wa-intro">כשאוכל טוב — רוצים לספר על זה.</p>
   <div class="wa-grid" id="wa-grid">
-    <div class="wa-bubble" id="wab-0">
-      <div class="wa-bubble-name" id="wa-name-0">שירה 🌿</div>
-      <div class="wa-bubble-text" id="wa-text-0">מעיין!! עשיתי את הפסטה רוזה ואני לא מאמינה כמה היא טעימה ❤️</div>
-      <div class="wa-bubble-time">אתמול 21:14 ✓✓</div>
-    </div>
-    <div class="wa-bubble" id="wab-1">
-      <div class="wa-bubble-name" id="wa-name-1">לירון 💪</div>
-      <div class="wa-bubble-text" id="wa-text-1">שבוע ראשון עם הספר וירדתי 1.5 קילו בלי להרגיש שאני בדיאטה 🙏</div>
-      <div class="wa-bubble-time">לפני 3 ימים 18:42 ✓✓</div>
-    </div>
-    <div class="wa-image-slot" id="wa-img-slot-0">
-      <label>
-        <input type="file" accept="image/*" class="wa-upload-input" data-slot="0">
-        <div class="wa-image-placeholder"><span>📸</span>לחצי להוספת צילום מסך וואטסאפ</div>
-      </label>
-    </div>
-    <div class="wa-image-slot" id="wa-img-slot-1">
-      <label>
-        <input type="file" accept="image/*" class="wa-upload-input" data-slot="1">
-        <div class="wa-image-placeholder"><span>📸</span>לחצי להוספת צילום מסך נוסף</div>
-      </label>
-    </div>
+    <div class="wa-bubble" id="wab-0"><div class="wa-bubble-name" id="wa-name-0">שירה 🌿</div><div class="wa-bubble-text" id="wa-text-0">מעיין!! עשיתי את הפסטה רוזה ואני לא מאמינה כמה היא טעימה ❤️</div><div class="wa-bubble-time">21:14 ✓✓</div></div>
+    <div class="wa-bubble" id="wab-1"><div class="wa-bubble-name" id="wa-name-1">לירון 💪</div><div class="wa-bubble-text" id="wa-text-1">שבוע ראשון עם הספר וירדתי 1.5 קילו בלי להרגיש שאני בדיאטה 🙏</div><div class="wa-bubble-time">18:42 ✓✓</div></div>
+    <div class="wa-image-slot" id="wa-img-slot-0"><label><input type="file" accept="image/*" class="wa-upload-input" data-slot="0"><div class="wa-image-placeholder"><span>📸</span>לחצי להוספת צילום מסך</div></label></div>
+    <div class="wa-image-slot" id="wa-img-slot-1"><label><input type="file" accept="image/*" class="wa-upload-input" data-slot="1"><div class="wa-image-placeholder"><span>📸</span>לחצי להוספת צילום מסך נוסף</div></label></div>
   </div>
 </section>
 
 <!-- TIP BAND -->
 <div class="tip-band">
-  <div class="tip-band-label" id="tip-label">הפילוסופיה של TARIMI</div>
+  <span class="tip-band-label" id="tip-label">הפילוסופיה של TARIMI</span>
   <p class="tip-band-text" id="tip-text">תזונה נכונה לא חייבת להיות משעממת. היא יכולה להיות חכמה, יצירתית ומלאה באהבה לעצמך.</p>
 </div>
 
 <!-- FAQ -->
 <section class="faq-section">
-  <div class="sec-label">שאלות ותשובות</div>
+  <span class="sec-label" style="text-align:center;display:block">שאלות ותשובות</span>
   <h2 class="sec-title" style="text-align:center;margin-bottom:0">שאלות שאולי <em>שאלת את עצמך</em></h2>
-  <div class="faq-list" id="faq-list">
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-0">מה מקבלת בדיוק?</span><span class="faq-arrow">+</span></div>
-      <div class="faq-answer" id="faq-a-0">קובץ PDF דיגיטלי עם 20 מתכונים מלאים כולל מצרכים, הוראות הכנה וטיפ תזונתי מרים בכל מתכון. הגישה לצמיתות.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-1">האם המתכונים מורכבים להכנה?</span><span class="faq-arrow">+</span></div>
-      <div class="faq-answer" id="faq-a-1">בכלל לא. כל המתכונים נבנו במיוחד לאנשים עם חיים עמוסים. כל מתכון לוקח בין 10 ל-30 דקות.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-2">מתי מקבלת את הספר?</span><span class="faq-arrow">+</span></div>
-      <div class="faq-answer" id="faq-a-2">מיד לאחר הרכישה מגיע למייל קישור להורדה. ההורדה מיידית וזמינה מכל מכשיר.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-3">האם יש כפל ביוקר?</span><span class="faq-arrow">+</span></div>
-      <div class="faq-answer" id="faq-a-3">לא. מדובר בתשלום חד פעמי של 79 שקל בלבד. ללא מנוי, ללא חיובים חוזרים.</div>
-    </div>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-0">מה מקבלת בדיוק?</span><span class="faq-arrow">+</span></div><div class="faq-answer" id="faq-a-0">קובץ PDF עם 20 מתכונים מלאים. גישה לצמיתות.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-1">האם המתכונים מורכבים?</span><span class="faq-arrow">+</span></div><div class="faq-answer" id="faq-a-1">בכלל לא. כל מתכון בין 10 ל-30 דקות.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-2">מתי מקבלת את הספר?</span><span class="faq-arrow">+</span></div><div class="faq-answer" id="faq-a-2">מיד לאחר הרכישה — קישור להורדה ישירות למייל.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span id="faq-q-3">האם יש חיובים חוזרים?</span><span class="faq-arrow">+</span></div><div class="faq-answer" id="faq-a-3">לא. תשלום חד פעמי של 79 שקל בלבד.</div></div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta">
-  <div class="cta-tag" id="cta-tag">מוכנה להתחיל?</div>
-  <h2 class="cta-title" id="cta-title">תזונה <em>מרימה</em></h2>
-  <p class="cta-sub" id="cta-sub">ספר מתכונים דיגיטלי · גישה מיידית · לצמיתות<br>20 מתכונים עם טיפ תזונתי מרים בכל אחד מהם</p>
-  <div class="price-box">
-    <span class="price-currency">₪</span>
-    <span class="price-amount" id="cta-price">79</span>
-  </div>
-  <p class="price-value-line" id="price-value-line">פחות מהמחיר של סלט בבית קפה — <strong>ויש לך סדר ותוכנית לכל החיים</strong></p>
+  <span class="cta-tag" id="cta-tag">מוכנה להתחיל?</span>
+  <h2 class="cta-title">תזונה <em>מרימה</em></h2>
+  <p class="cta-sub">ספר מתכונים דיגיטלי · גישה מיידית · לצמיתות</p>
+  <div class="price-box"><span class="price-currency">₪</span><span class="price-amount" id="cta-price">79</span></div>
+  <p class="price-value-line" id="price-value-line">פחות מהמחיר של סלט בבית קפה — <strong>ויש לך סדר לכל החיים</strong></p>
   <p class="price-note" id="price-note">תשלום חד פעמי · PDF דיגיטלי</p>
   <br>
   <a class="cta-btn" id="btn-cta" href="https://arbox.link/yFl33Tp3" target="_blank">לרכישת הספר עכשיו ←</a>
   <div class="trust-badge">🔒 רכישה מאובטחת | קבלת הקובץ מידית למייל</div>
-  <p class="cta-guarantee" id="cta-guarantee">✓ גישה מיידית לאחר הרכישה · ✓ תמיכה מלאה</p>
+  <p class="cta-guarantee" id="cta-guarantee">✓ גישה מיידית · ✓ תמיכה מלאה</p>
 </section>
 
 <footer>
@@ -825,316 +679,301 @@ footer{background:var(--dark);padding:2rem 5vw;display:flex;justify-content:spac
   <div class="footer-copy">© 2025 כל הזכויות שמורות</div>
 </footer>
 
-<!-- STICKY MOBILE CTA -->
 <div id="sticky-cta">
-  <a class="sticky-btn" href="https://arbox.link/yFl33Tp3" target="_blank">לרכישת הספר עכשיו — ₪79 ←</a>
-  <div class="sticky-trust">🔒 רכישה מאובטחת | קבלת הקובץ מידית למייל</div>
+  <a class="sticky-btn" href="https://arbox.link/yFl33Tp3" target="_blank">לרכישת הספר — ₪79 ←</a>
+  <div class="sticky-trust">🔒 רכישה מאובטחת | קובץ PDF מגיע מיידית למייל</div>
 </div>
 
 <script>
-// ── PANEL ──
-const panel = document.getElementById('editor-panel');
-const toggle = document.getElementById('editor-toggle');
-const closeBtn = document.getElementById('panel-close');
-toggle.addEventListener('click', () => { panel.classList.toggle('open'); toggle.style.display = panel.classList.contains('open') ? 'none' : 'flex'; });
-closeBtn.addEventListener('click', () => { panel.classList.remove('open'); toggle.style.display = 'flex'; });
+// ── RECIPE DATA ──
+const recipeData=[
+  {name:"פיצות אישיות מרימות",tag:"ארוחת צהריים",desc:"בצק קוטג' עשיר בחלבון"},
+  {name:"פסטה רוזה מרימה",tag:"ארוחת ערב",desc:"קרמי ועשיר בחלבון"},
+  {name:"שווארמה פרגיות ביתית",tag:"ארוחה עיקרית",desc:"עשירה בברזל, דלה בשומן"},
+  {name:"סלמון בתנור",tag:"חלבון קל",desc:"5 דקות הכנה"},
+  {name:"סלט קינואה ירוק",tag:"סלט",desc:"טעים ומזין בטירוף"},
+  {name:"פנקייק חלבון",tag:"ארוחת בוקר",desc:"בוקר שמרגיש כמו פינוק"},
+  {name:"שניצל קריספי בנינג'ה",tag:"ארוחה עיקרית",desc:"בלי טיגון, עם מלא טעם"},
+  {name:"קציצות מרימות ברוטב",tag:"קלאסיק",desc:"כמו של אמא"}
+];
 
-// ── TABS ──
-document.querySelectorAll('.panel-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+// Build recipes grid
+const grid=document.getElementById('recipes-grid');
+const uploadList=document.getElementById('recipe-upload-list');
+recipeData.forEach((r,i)=>{
+  grid.innerHTML+=`<div class="recipe-card" data-idx="${i}">
+    <div class="recipe-img-wrap" id="recipe-img-box-${i}">
+      <img id="recipe-img-${i}" src="" alt="">
+      <div class="recipe-img-placeholder" onclick="triggerRecipeUpload(${i})">
+        <span>📸</span><p>לחצי להוספת תמונה</p>
+      </div>
+    </div>
+    <div class="recipe-info">
+      <div class="recipe-card-tag">${r.tag}</div>
+      <div class="recipe-card-name">${r.name}</div>
+      <div class="recipe-card-desc">${r.desc}</div>
+    </div>
+  </div>`;
+  uploadList.innerHTML+=`<div class="field" style="margin-bottom:0.8rem">
+    <label>${r.name}</label>
+    <div class="img-upload-area" style="padding:0.7rem">
+      <input type="file" accept="image/*" onchange="uploadRecipeImg(this,${i})">
+      <img class="img-upload-preview" id="recipe-panel-preview-${i}" src="" alt="">
+      <span class="img-upload-icon" style="font-size:1.2rem">📸</span>
+      <div class="img-upload-text" style="font-size:11px">העלאת תמונה</div>
+    </div>
+  </div>`;
+});
+
+function triggerRecipeUpload(i){
+  document.querySelector(`#recipe-img-box-${i} input[type=file]`)||document.querySelectorAll(`#tab-recipes input[type=file]`)[i].click();
+}
+function uploadRecipeImg(input,i){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById(`recipe-img-${i}`);
+    img.src=e.target.result;img.classList.add('visible');
+    const ph=document.querySelector(`#recipe-img-box-${i} .recipe-img-placeholder`);
+    if(ph)ph.style.display='none';
+    const pp=document.getElementById(`recipe-panel-preview-${i}`);
+    if(pp){pp.src=e.target.result;pp.classList.add('visible');}
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── PANEL ──
+const panel=document.getElementById('editor-panel');
+const toggleBtn=document.getElementById('editor-toggle');
+const closeBtn=document.getElementById('panel-close');
+toggleBtn.addEventListener('click',()=>{panel.classList.toggle('open');toggleBtn.style.display=panel.classList.contains('open')?'none':'flex';});
+closeBtn.addEventListener('click',()=>{panel.classList.remove('open');toggleBtn.style.display='flex';});
+document.querySelectorAll('.panel-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
     tab.classList.add('active');
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
   });
 });
 
-// ── IMAGE UPLOAD: MAAYAN ──
-function setupImgUpload(inputId, previewId, clearId, photoId, uploadAreaId, placeholderIconId, boxId) {
-  const input = document.getElementById(inputId);
-  const preview = document.getElementById(previewId);
-  const clear = document.getElementById(clearId);
-  const photo = photoId ? document.getElementById(photoId) : null;
-  const icon = placeholderIconId ? document.getElementById(placeholderIconId) : null;
-  const box = boxId ? document.getElementById(boxId) : null;
-  const area = document.getElementById(uploadAreaId);
-  if (!input) return;
-  input.addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const src = ev.target.result;
-      preview.src = src; preview.classList.add('visible');
+// ── BOOK DESIGN ──
+document.getElementById('book-color').addEventListener('input',e=>{document.getElementById('book-mockup').style.background=e.target.value;});
+document.getElementById('book-title-input').addEventListener('input',e=>{document.getElementById('book-title-display').innerText=e.target.value;});
+document.getElementById('book-media-type').addEventListener('change',e=>{
+  document.getElementById('book-img-field').style.display=e.target.value==='image'?'block':'none';
+  document.getElementById('book-video-field').style.display=e.target.value==='video'?'block':'none';
+});
+document.getElementById('book-img-input').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('book-img-display');
+    img.src=ev.target.result;img.classList.remove('hidden');
+    document.getElementById('book-video-display').classList.add('hidden');
+    const pp=document.getElementById('book-img-preview');
+    pp.src=ev.target.result;pp.classList.add('visible');
+  };reader.readAsDataURL(file);
+});
+document.getElementById('book-video-input').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const vid=document.getElementById('book-video-display');
+  vid.src=URL.createObjectURL(file);vid.classList.remove('hidden');
+  document.getElementById('book-img-display').classList.add('hidden');
+});
+
+// ── IMAGE UPLOADS: MAAYAN ──
+function setupUpload(inputId,previewId,clearId,photoId,areaId,iconId,boxId){
+  const input=document.getElementById(inputId);
+  const preview=document.getElementById(previewId);
+  const clear=document.getElementById(clearId);
+  const photo=photoId?document.getElementById(photoId):null;
+  const icon=iconId?document.getElementById(iconId):null;
+  const box=boxId?document.getElementById(boxId):null;
+  const area=document.getElementById(areaId);
+  if(!input)return;
+  input.addEventListener('change',e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const src=ev.target.result;
+      preview.src=src;preview.classList.add('visible');
       clear.classList.add('visible');
-      area.querySelector('.img-upload-icon').style.display = 'none';
-      area.querySelector('.img-upload-text').style.display = 'none';
-      area.querySelector('.img-upload-hint').style.display = 'none';
-      if (photo) { photo.src = src; photo.classList.add('visible'); }
-      if (icon) icon.style.display = 'none';
-      if (box) box.removeAttribute('data-name');
-    };
-    reader.readAsDataURL(file);
+      area.querySelector('.img-upload-icon').style.display='none';
+      area.querySelector('.img-upload-text').style.display='none';
+      if(photo){photo.src=src;photo.classList.add('visible');}
+      if(icon)icon.style.display='none';
+      if(box)box.removeAttribute('data-name');
+    };reader.readAsDataURL(file);
   });
-  clear.addEventListener('click', () => {
-    input.value = ''; preview.src = ''; preview.classList.remove('visible'); clear.classList.remove('visible');
-    area.querySelector('.img-upload-icon').style.display = '';
-    area.querySelector('.img-upload-text').style.display = '';
-    area.querySelector('.img-upload-hint').style.display = '';
-    if (photo) { photo.src = ''; photo.classList.remove('visible'); }
-    if (icon) icon.style.display = '';
-    if (box) box.dataset.name = 'מעיין סולטאן';
+  clear.addEventListener('click',()=>{
+    input.value='';preview.src='';preview.classList.remove('visible');clear.classList.remove('visible');
+    area.querySelector('.img-upload-icon').style.display='';
+    area.querySelector('.img-upload-text').style.display='';
+    if(photo){photo.src='';photo.classList.remove('visible');}
+    if(icon)icon.style.display='';
+    if(box)box.dataset.name='מעיין סולטאן';
   });
 }
-setupImgUpload('maayan-img-input','maayan-preview','maayan-clear','maayan-photo','maayan-upload-area','maayan-placeholder-icon','maayan-box');
+setupUpload('maayan-img-input','maayan-preview','maayan-clear','maayan-photo','maayan-upload-area','maayan-placeholder-icon','maayan-box');
 
-// ── SOLUTION TOP IMAGE ──
-const solTopInput = document.getElementById('sol-top-img-input');
-const solTopPreview = document.getElementById('sol-top-preview');
-const solTopImg = document.getElementById('solution-top-img');
-const solTopPlaceholder = document.getElementById('solution-top-placeholder');
-const solTopClear = document.getElementById('sol-top-clear');
-solTopInput.addEventListener('change', e => {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const src = ev.target.result;
-    solTopPreview.src = src; solTopPreview.classList.add('visible'); solTopClear.classList.add('visible');
-    document.querySelector('#sol-top-upload-area .img-upload-icon').style.display = 'none';
-    document.querySelector('#sol-top-upload-area .img-upload-text').style.display = 'none';
-    document.querySelector('#sol-top-upload-area .img-upload-hint').style.display = 'none';
-    solTopImg.src = src; solTopImg.classList.add('visible'); solTopPlaceholder.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+// Solution top
+const stInput=document.getElementById('sol-top-img-input');
+const stPreview=document.getElementById('sol-top-preview');
+const stImg=document.getElementById('solution-top-img');
+const stPh=document.getElementById('solution-top-placeholder');
+const stClear=document.getElementById('sol-top-clear');
+stInput.addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const src=ev.target.result;
+    stPreview.src=src;stPreview.classList.add('visible');stClear.classList.add('visible');
+    document.querySelector('#sol-top-upload-area .img-upload-icon').style.display='none';
+    document.querySelector('#sol-top-upload-area .img-upload-text').style.display='none';
+    stImg.src=src;stImg.classList.add('visible');stPh.style.display='none';
+  };reader.readAsDataURL(file);
 });
-solTopClear.addEventListener('click', () => {
-  solTopInput.value = ''; solTopPreview.src = ''; solTopPreview.classList.remove('visible'); solTopClear.classList.remove('visible');
-  document.querySelector('#sol-top-upload-area .img-upload-icon').style.display = '';
-  document.querySelector('#sol-top-upload-area .img-upload-text').style.display = '';
-  document.querySelector('#sol-top-upload-area .img-upload-hint').style.display = '';
-  solTopImg.src = ''; solTopImg.classList.remove('visible'); solTopPlaceholder.style.display = '';
+stClear.addEventListener('click',()=>{
+  stInput.value='';stPreview.src='';stPreview.classList.remove('visible');stClear.classList.remove('visible');
+  document.querySelector('#sol-top-upload-area .img-upload-icon').style.display='';
+  document.querySelector('#sol-top-upload-area .img-upload-text').style.display='';
+  stImg.src='';stImg.classList.remove('visible');stPh.style.display='';
 });
 
-// ── SOLUTION FULL REPLACE ──
-const solutionInput = document.getElementById('solution-img-input');
-const solutionPreview = document.getElementById('solution-preview');
-const solutionImg = document.getElementById('solution-img');
-const solutionCard = document.getElementById('recipe-preview-card');
-const solutionClear = document.getElementById('solution-clear');
-solutionInput.addEventListener('change', e => {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const src = ev.target.result;
-    solutionPreview.src = src; solutionPreview.classList.add('visible'); solutionClear.classList.add('visible');
-    document.querySelector('#solution-upload-area .img-upload-icon').style.display = 'none';
-    document.querySelector('#solution-upload-area .img-upload-text').style.display = 'none';
-    document.querySelector('#solution-upload-area .img-upload-hint').style.display = 'none';
-    solutionImg.src = src; solutionImg.classList.add('visible'); solutionCard.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+// Solution full
+const slInput=document.getElementById('solution-img-input');
+const slPreview=document.getElementById('solution-preview');
+const slImg=document.getElementById('solution-img');
+const slCard=document.getElementById('recipe-preview-card');
+const slClear=document.getElementById('solution-clear');
+slInput.addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    slPreview.src=ev.target.result;slPreview.classList.add('visible');slClear.classList.add('visible');
+    document.querySelector('#solution-upload-area .img-upload-icon').style.display='none';
+    document.querySelector('#solution-upload-area .img-upload-text').style.display='none';
+    slImg.src=ev.target.result;slImg.classList.remove('hidden');slCard.style.display='none';
+  };reader.readAsDataURL(file);
 });
-solutionClear.addEventListener('click', () => {
-  solutionInput.value = ''; solutionPreview.src = ''; solutionPreview.classList.remove('visible'); solutionClear.classList.remove('visible');
-  document.querySelector('#solution-upload-area .img-upload-icon').style.display = '';
-  document.querySelector('#solution-upload-area .img-upload-text').style.display = '';
-  document.querySelector('#solution-upload-area .img-upload-hint').style.display = '';
-  solutionImg.src = ''; solutionImg.classList.remove('visible'); solutionCard.style.display = '';
-});
-
-// ── BOOK EMOJI ──
-const bookIcon = document.getElementById('book-icon');
-document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    bookIcon.textContent = btn.dataset.emoji;
-    document.getElementById('book-emoji-custom').value = '';
-  });
-});
-document.getElementById('book-emoji-custom').addEventListener('input', e => {
-  if (e.target.value) { document.querySelectorAll('#book-emoji-row .emoji-btn').forEach(b => b.classList.remove('selected')); bookIcon.textContent = e.target.value; }
-});
-
-// ── RECIPE ICONS ──
-const recipeCards = document.querySelectorAll('.recipe-card');
-const recipeIconsList = document.getElementById('recipe-icons-list');
-const defaultEmojis = ['🍕','🍝','🥙','🐟','🥗','🥞','🍗','🫕'];
-const recipeNames = ['פיצות אישיות','פסטה רוזה','שווארמה פרגיות','סלמון בתנור','סלט קינואה','פנקייק חלבון','שניצל קריספי','קציצות מרימות'];
-recipeNames.forEach((name, idx) => {
-  const item = document.createElement('div'); item.className = 'recipe-item';
-  item.innerHTML = `<div class="recipe-item-header"><span class="recipe-item-emoji" id="ri-emoji-${idx}">${defaultEmojis[idx]}</span><span class="recipe-item-name">${name}</span><span class="recipe-item-toggle">▼</span></div><div class="recipe-item-fields" id="ri-fields-${idx}"><div class="emoji-row" id="ri-row-${idx}">${['🍕','🍝','🥙','🐟','🥗','🥞','🍗','🫕','🥘','🍲','🥚','🧆','🌮','🥩','🫔','🧁'].map(e=>`<button class="emoji-btn${e===defaultEmojis[idx]?' selected':''}" data-emoji="${e}">${e}</button>`).join('')}</div><input class="emoji-custom-input" id="ri-custom-${idx}" placeholder="אייקון מותאם..."></div>`;
-  recipeIconsList.appendChild(item);
-  item.querySelector('.recipe-item-header').addEventListener('click', () => {
-    const fields = document.getElementById(`ri-fields-${idx}`); fields.classList.toggle('open');
-    item.querySelector('.recipe-item-toggle').textContent = fields.classList.contains('open') ? '▲' : '▼';
-  });
-  item.querySelectorAll('.emoji-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      item.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected');
-      const cardIcon = recipeCards[idx].querySelector('.recipe-card-icon');
-      if (cardIcon) cardIcon.textContent = btn.dataset.emoji;
-      document.getElementById(`ri-emoji-${idx}`).textContent = btn.dataset.emoji;
-      document.getElementById(`ri-custom-${idx}`).value = '';
-    });
-  });
-  document.getElementById(`ri-custom-${idx}`).addEventListener('input', e => {
-    if (e.target.value) {
-      item.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-      const cardIcon = recipeCards[idx].querySelector('.recipe-card-icon');
-      if (cardIcon) cardIcon.textContent = e.target.value;
-      document.getElementById(`ri-emoji-${idx}`).textContent = e.target.value;
-    }
-  });
+slClear.addEventListener('click',()=>{
+  slInput.value='';slPreview.src='';slPreview.classList.remove('visible');slClear.classList.remove('visible');
+  document.querySelector('#solution-upload-area .img-upload-icon').style.display='';
+  document.querySelector('#solution-upload-area .img-upload-text').style.display='';
+  slImg.src='';slImg.classList.add('hidden');slCard.style.display='';
 });
 
 // ── LIVE TEXT BINDINGS ──
-const bindings = [
-  ['txt-nav-cta','nav-cta-link','text'],['txt-hero-line1','hero-line1','text'],['txt-hero-line2','hero-line2','text'],
+const bindings=[
+  ['txt-hero-line1','hero-line1','text'],['txt-hero-line2','hero-line2','text'],
   ['txt-hero-desc','hero-desc','text'],['txt-btn-main','btn-main','text'],
-  ['txt-maayan-name','maayan-name-el','text'],['txt-maayan-bio','maayan-bio-el','text'],
-  ['txt-btn-cta','btn-cta','text'],['txt-pain-label','pain-label','text'],['txt-pain-sub','pain-sub','text'],
+  ['txt-sol-title','sol-title','text'],['txt-sol-body','sol-body','text'],
   ['txt-pain-0','pain-0','text'],['txt-pain-1','pain-1','text'],['txt-pain-2','pain-2','text'],
   ['txt-pain-3','pain-3','text'],['txt-pain-4','pain-4','text'],['txt-pain-5','pain-5','text'],
-  ['txt-sol-title','sol-title','text'],['txt-sol-body','sol-body','text'],
   ['txt-check-0','check-0','text'],['txt-check-1','check-1','text'],['txt-check-2','check-2','text'],
   ['txt-check-3','check-3','text'],['txt-check-4','check-4','text'],
-  ['txt-tip-label','tip-label','text'],['txt-tip-text','tip-text','text'],
-  ['txt-cta-tag','cta-tag','text'],['txt-guarantee','cta-guarantee','text'],
-  ['txt-price-note','price-note','text'],['txt-price-value','price-value-line','html'],
+  ['txt-maayan-name','maayan-name-el','text'],['txt-maayan-bio','maayan-bio-el','text'],
   ['txt-test-0','test-0','text'],['txt-test-1','test-1','text'],['txt-test-2','test-2','text'],['txt-test-3','test-3','text'],
   ['txt-test-name-0','test-name-0','text'],['txt-test-name-1','test-name-1','text'],['txt-test-name-2','test-name-2','text'],['txt-test-name-3','test-name-3','text'],
   ['txt-wa-name-0','wa-name-0','text'],['txt-wa-name-1','wa-name-1','text'],
   ['txt-wa-text-0','wa-text-0','text'],['txt-wa-text-1','wa-text-1','text'],
-  ['txt-success-0','success-0','text'],['txt-success-1','success-1','text'],['txt-success-2','success-2','text'],
-  ['txt-success-name-0','success-name-0','text'],['txt-success-name-1','success-name-1','text'],['txt-success-name-2','success-name-2','text'],
-  ['txt-success-before-0','txt-display-before-0','text'],['txt-success-after-0','txt-display-after-0','text'],
-  ['txt-success-before-1','txt-display-before-1','text'],['txt-success-after-1','txt-display-after-1','text'],
-  ['txt-success-before-2','txt-display-before-2','text'],['txt-success-after-2','txt-display-after-2','text'],
+  ['txt-price-value','price-value-line','html'],['txt-btn-cta','btn-cta','text'],
 ];
-bindings.forEach(([inputId, targetId, type]) => {
-  const input = document.getElementById(inputId); const target = document.getElementById(targetId);
-  if (!input || !target) return;
-  input.addEventListener('input', () => { if (type === 'text') target.textContent = input.value; else target.innerHTML = input.value; });
+bindings.forEach(([inp,tgt,type])=>{
+  const i=document.getElementById(inp),t=document.getElementById(tgt);
+  if(!i||!t)return;
+  i.addEventListener('input',()=>{if(type==='text')t.textContent=i.value;else t.innerHTML=i.value;});
 });
-
-// Quote
-document.getElementById('txt-quote').addEventListener('input', e => { document.getElementById('quote-el').textContent = '"' + e.target.value + '"'; });
-
-// Price
-document.getElementById('txt-price').addEventListener('input', e => {
-  const val = e.target.value;
-  document.getElementById('stat-price').textContent = val;
-  document.getElementById('cta-price').textContent = val;
+document.getElementById('txt-quote').addEventListener('input',e=>{document.getElementById('quote-el').textContent='"'+e.target.value+'"';});
+document.getElementById('txt-price').addEventListener('input',e=>{
+  document.getElementById('stat-price').textContent=e.target.value;
+  document.getElementById('cta-price').textContent=e.target.value;
 });
-
-// Recipe name/desc
-for (let i = 0; i < 8; i++) {
-  const nameInput = document.getElementById(`txt-rname-${i}`);
-  const descInput = document.getElementById(`txt-rdesc-${i}`);
-  const card = document.querySelector(`.recipe-card[data-idx="${i}"]`);
-  if (!card) continue;
-  if (nameInput) nameInput.addEventListener('input', e => { card.querySelector('.recipe-card-name').textContent = e.target.value; });
-  if (descInput) descInput.addEventListener('input', e => { card.querySelector('.recipe-card-desc').textContent = e.target.value; });
+for(let i=0;i<4;i++){
+  const qi=document.getElementById(`txt-faq-q-${i}`),qe=document.getElementById(`faq-q-${i}`);
+  const ai=document.getElementById(`txt-faq-a-${i}`),ae=document.getElementById(`faq-a-${i}`);
+  if(qi&&qe)qi.addEventListener('input',e=>{qe.textContent=e.target.value;});
+  if(ai&&ae)ai.addEventListener('input',e=>{ae.textContent=e.target.value;});
 }
 
-// FAQ bindings
-for (let i = 0; i < 4; i++) {
-  const qInput = document.getElementById(`txt-faq-q-${i}`);
-  const aInput = document.getElementById(`txt-faq-a-${i}`);
-  const qEl = document.getElementById(`faq-q-${i}`);
-  const aEl = document.getElementById(`faq-a-${i}`);
-  if (qInput && qEl) qInput.addEventListener('input', e => { qEl.textContent = e.target.value; });
-  if (aInput && aEl) aInput.addEventListener('input', e => { aEl.textContent = e.target.value; });
+// ── FAQ ──
+function toggleFaq(el){
+  const item=el.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
 }
 
-// ── FAQ ACCORDION ──
-function toggleFaq(el) {
-  const item = el.parentElement;
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
-
-// ── WHATSAPP IMAGE SLOTS ──
-document.querySelectorAll('.wa-upload-input').forEach(input => {
-  input.addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const slot = e.target.dataset.slot; if (!slot) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const slotEl = document.getElementById(`wa-img-slot-${slot}`);
-      slotEl.innerHTML = `<img src="${ev.target.result}" alt="" style="border-radius:14px;max-width:100%;display:block;box-shadow:0 1px 4px rgba(0,0,0,0.1)"><button onclick="clearWaSlot(${slot})" style="margin-top:6px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:rgba(200,0,0,0.7);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Assistant',sans-serif;">✕ הסרה</button>`;
+// ── WHATSAPP UPLOADS ──
+document.querySelectorAll('.wa-upload-input').forEach(input=>{
+  input.addEventListener('change',e=>{
+    const file=e.target.files[0];if(!file)return;
+    const slot=e.target.dataset.slot;if(slot===undefined)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const slotEl=document.getElementById(`wa-img-slot-${slot}`);
+      slotEl.innerHTML=`<img src="${ev.target.result}" style="border-radius:14px;max-width:100%;display:block;"><button onclick="clearWaSlot(${slot})" style="margin-top:6px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:rgba(200,0,0,0.7);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">✕ הסרה</button>`;
       slotEl.classList.add('visible');
-    };
-    reader.readAsDataURL(file);
+    };reader.readAsDataURL(file);
   });
 });
-function clearWaSlot(slot) {
-  const slotEl = document.getElementById(`wa-img-slot-${slot}`);
-  const labels = ['לחצי להוספת צילום מסך וואטסאפ','לחצי להוספת צילום מסך נוסף'];
+function clearWaSlot(slot){
+  const labels=['לחצי להוספת צילום מסך','לחצי להוספת צילום מסך נוסף'];
+  const slotEl=document.getElementById(`wa-img-slot-${slot}`);
   slotEl.classList.remove('visible');
-  slotEl.innerHTML = `<label><input type="file" accept="image/*" class="wa-upload-input" data-slot="${slot}"><div class="wa-image-placeholder"><span>📸</span>${labels[slot]}</div></label>`;
-  slotEl.querySelector('input').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      slotEl.innerHTML = `<img src="${ev.target.result}" alt="" style="border-radius:14px;max-width:100%;display:block;"><button onclick="clearWaSlot(${slot})" style="margin-top:6px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:rgba(200,0,0,0.7);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Assistant',sans-serif;">✕ הסרה</button>`;
-      slotEl.classList.add('visible');
-    };
+  slotEl.innerHTML=`<label><input type="file" accept="image/*" class="wa-upload-input" data-slot="${slot}"><div class="wa-image-placeholder"><span>📸</span>${labels[slot]}</div></label>`;
+  slotEl.querySelector('input').addEventListener('change',e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{slotEl.innerHTML=`<img src="${ev.target.result}" style="border-radius:14px;max-width:100%;display:block;"><button onclick="clearWaSlot(${slot})" style="margin-top:6px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:rgba(200,0,0,0.7);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">✕ הסרה</button>`;slotEl.classList.add('visible');};
     reader.readAsDataURL(file);
   });
 }
 
-// ── SUCCESS STORIES IMAGE ──
-function triggerSuccessUpload(idx) {
-  document.getElementById(`success-file-${idx}`).click();
-}
-for (let i = 0; i < 3; i++) {
-  const fileInput = document.getElementById(`success-file-${i}`);
-  const slot = document.getElementById(`success-img-${i}`);
-  if (!fileInput) continue;
-  fileInput.addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      slot.innerHTML = `<img src="${ev.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"><input type="file" accept="image/*" class="wa-upload-input" id="success-file-${i}" style="display:none">`;
-      const newInput = slot.querySelector('input');
-      slot.onclick = () => newInput.click();
-      newInput.addEventListener('change', e2 => {
-        const f = e2.target.files[0]; if (!f) return;
-        const r = new FileReader(); r.onload = ev2 => { slot.querySelector('img').src = ev2.target.result; }; r.readAsDataURL(f);
-      });
-    };
-    reader.readAsDataURL(file);
+// ── SUCCESS IMAGES ──
+function triggerSuccessUpload(i){document.getElementById(`success-file-${i}`).click();}
+for(let i=0;i<3;i++){
+  const fi=document.getElementById(`success-file-${i}`);
+  const slot=document.getElementById(`success-img-${i}`);
+  if(!fi)continue;
+  fi.addEventListener('change',e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      slot.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"><input type="file" accept="image/*" id="success-file-${i}" style="display:none">`;
+      const ni=slot.querySelector('input');slot.onclick=()=>ni.click();
+      ni.addEventListener('change',e2=>{const f=e2.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev2=>{slot.querySelector('img').src=ev2.target.result;};r.readAsDataURL(f);});
+    };reader.readAsDataURL(file);
   });
 }
 
-// ── STICKY CTA (mobile, after hero) ──
-const stickyCta = document.getElementById('sticky-cta');
-const heroSection = document.getElementById('hero-section');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => { stickyCta.style.display = entry.isIntersecting ? 'none' : 'flex'; });
-}, { threshold: 0.1 });
-if (window.innerWidth <= 768) observer.observe(heroSection);
+// ── STICKY CTA (mobile) ──
+const stickyCta=document.getElementById('sticky-cta');
+const heroSection=document.getElementById('hero-section');
+if('IntersectionObserver' in window){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(window.innerWidth<=768)stickyCta.style.display=entry.isIntersecting?'none':'flex';
+    });
+  },{threshold:0.1});
+  obs.observe(heroSection);
+}
 
-// ── WHATSAPP BUBBLE ANIMATION ──
-const waObserver = new IntersectionObserver(entries => {
-  entries.forEach((entry, idx) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), idx * 150);
-      waObserver.unobserve(entry.target);
-    }
+// ── WA ANIMATION ──
+const waObs=new IntersectionObserver(entries=>{
+  entries.forEach((entry,idx)=>{
+    if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('visible'),idx*150);waObs.unobserve(entry.target);}
   });
-}, { threshold: 0.2 });
-document.querySelectorAll('.wa-bubble, .wa-image-slot').forEach(el => waObserver.observe(el));
+},{threshold:0.2});
+document.querySelectorAll('.wa-bubble,.wa-image-slot').forEach(el=>waObs.observe(el));
 
-// ── SAVE BUTTON ──
-document.getElementById('save-btn').addEventListener('click', () => {
-  const btn = document.getElementById('save-btn');
-  const icon = document.getElementById('save-icon');
-  const text = document.getElementById('save-text');
-  btn.classList.add('saved'); icon.textContent = '✓'; text.textContent = 'נשמר!';
-  setTimeout(() => { btn.classList.remove('saved'); icon.textContent = '💾'; text.textContent = 'החל שינויים'; }, 2000);
+// ── SAVE BTN ──
+document.getElementById('save-btn').addEventListener('click',()=>{
+  const btn=document.getElementById('save-btn');
+  const txt=document.getElementById('save-text');
+  btn.classList.add('saved');txt.textContent='נשמר!';
+  setTimeout(()=>{btn.classList.remove('saved');txt.textContent='החל שינויים';},2000);
 });
 </script>
 </body>
